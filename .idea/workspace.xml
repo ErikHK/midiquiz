@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2fbecd91-03a6-4cd3-9fe1-705dad9475c6" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,8 +16,8 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="344">
-              <caret line="150" column="0" lean-forward="true" selection-start-line="150" selection-start-column="0" selection-end-line="150" selection-end-column="0" />
+            <state relative-caret-position="449">
+              <caret line="443" column="23" lean-forward="false" selection-start-line="443" selection-start-column="23" selection-end-line="443" selection-end-column="23" />
               <folding>
                 <element signature="e#1#14#0" expanded="true" />
               </folding>
@@ -36,10 +36,42 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>.begin</find>
-      <find>randomkey</find>
       <find>drawline</find>
+      <find>currNoteName</find>
+      <find>gClef</find>
+      <find>Window</find>
+      <find>window(</find>
+      <find>setupUi</find>
+      <find>__init__</find>
+      <find>setObjectName</find>
+      <find>resize</find>
+      <find>setSizePolicy</find>
+      <find>MainWindow</find>
+      <find>super</find>
+      <find>def __init__</find>
+      <find>InitWindow</find>
+      <find>StartWindow</find>
+      <find>start</find>
+      <find>self.pushButton</find>
+      <find>startbutt</find>
+      <find>connect</find>
+      <find>repaint</find>
+      <find>setupg</find>
+      <find>createGameWindow</find>
+      <find>startButton.clicked</find>
+      <find>retrans</find>
+      <find>.connect</find>
+      <find>setupGameUi</find>
+      <find>height</find>
+      <find>mainwin</find>
+      <find>self.title</find>
+      <find>setWindowTitle</find>
     </findStrings>
+    <replaceStrings>
+      <replace>self.</replace>
+      <replace>self</replace>
+      <replace>self.startButton</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -89,7 +121,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.externalTools" />
     <property name="last_opened_file_path" value="C:/Python38" />
   </component>
   <component name="RunDashboard">
@@ -154,7 +186,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297062" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3297062" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -208,8 +240,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="344">
-          <caret line="150" column="0" lean-forward="true" selection-start-line="150" selection-start-column="0" selection-end-line="150" selection-end-column="0" />
+        <state relative-caret-position="449">
+          <caret line="443" column="23" lean-forward="false" selection-start-line="443" selection-start-column="23" selection-end-line="443" selection-end-column="23" />
           <folding>
             <element signature="e#1#14#0" expanded="true" />
           </folding>
