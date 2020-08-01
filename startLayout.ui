@@ -30,7 +30,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="1" column="0">
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="startButton">
       <property name="layoutDirection">
        <enum>Qt::LeftToRight</enum>
       </property>
@@ -40,17 +40,17 @@
      </widget>
     </item>
     <item row="0" column="0">
-     <layout class="QGridLayout" name="gridLayout_2">
+     <layout class="QGridLayout" name="mainGridLayout">
       <property name="sizeConstraint">
        <enum>QLayout::SetMaximumSize</enum>
       </property>
       <item row="3" column="0">
-       <layout class="QGridLayout" name="gridLayout_4" rowstretch="0" rowminimumheight="0">
+       <layout class="QGridLayout" name="timeOrNumberOfNotesGridLayout" rowstretch="0" rowminimumheight="0">
         <property name="sizeConstraint">
          <enum>QLayout::SetMaximumSize</enum>
         </property>
         <item row="0" column="0">
-         <widget class="QLabel" name="label_2">
+         <widget class="QLabel" name="timeOrNumberOfNotesLabel">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
             <horstretch>0</horstretch>
@@ -68,26 +68,26 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <layout class="QGridLayout" name="gridLayout_9">
+         <layout class="QGridLayout" name="timeGridLayout">
           <item row="1" column="1">
-           <widget class="QLabel" name="label_10">
+           <widget class="QLabel" name="minLabel">
             <property name="text">
              <string>min</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QSpinBox" name="spinBox"/>
+           <widget class="QSpinBox" name="minutesSpinBox"/>
           </item>
           <item row="1" column="2">
-           <widget class="QCheckBox" name="checkBox_3">
+           <widget class="QCheckBox" name="unlimitedTimeCheckBox">
             <property name="text">
              <string>Unlimited</string>
             </property>
            </widget>
           </item>
           <item row="0" column="0" colspan="3">
-           <widget class="QRadioButton" name="radioButton">
+           <widget class="QRadioButton" name="timeRadioButton">
             <property name="text">
              <string>Time</string>
             </property>
@@ -96,29 +96,29 @@
          </layout>
         </item>
         <item row="0" column="2">
-         <layout class="QGridLayout" name="gridLayout_10">
+         <layout class="QGridLayout" name="numberOfNotesGridLayout">
           <property name="sizeConstraint">
            <enum>QLayout::SetMaximumSize</enum>
           </property>
           <item row="1" column="1">
-           <widget class="QLabel" name="label_11">
+           <widget class="QLabel" name="notesLabel">
             <property name="text">
              <string>notes</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QSpinBox" name="spinBox_2"/>
+           <widget class="QSpinBox" name="numberOfNotesSpinBox"/>
           </item>
           <item row="1" column="2">
-           <widget class="QCheckBox" name="checkBox_4">
+           <widget class="QCheckBox" name="unlimitedNotesCheckBox">
             <property name="text">
              <string>Unlimited</string>
             </property>
            </widget>
           </item>
           <item row="0" column="0" colspan="3">
-           <widget class="QRadioButton" name="radioButton_2">
+           <widget class="QRadioButton" name="numberOfNotesRadioButton">
             <property name="text">
              <string>Number of notes</string>
             </property>
@@ -129,9 +129,9 @@
        </layout>
       </item>
       <item row="6" column="0">
-       <layout class="QGridLayout" name="gridLayout_5">
+       <layout class="QGridLayout" name="noteRangesGridLayout">
         <item row="0" column="0">
-         <widget class="QLabel" name="label_3">
+         <widget class="QLabel" name="noteRangesLabel">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
             <horstretch>0</horstretch>
@@ -149,9 +149,9 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <layout class="QGridLayout" name="gridLayout_6">
+         <layout class="QGridLayout" name="bassGridLayout">
           <item row="1" column="1">
-           <widget class="QLabel" name="label_6">
+           <widget class="QLabel" name="highestNoteBassLabel">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -172,7 +172,7 @@
            </widget>
           </item>
           <item row="0" column="0" colspan="2">
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="bassLabel">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -193,7 +193,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="label_5">
+           <widget class="QLabel" name="lowestNoteBassLabel">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -214,17 +214,17 @@
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QComboBox" name="comboBox"/>
+           <widget class="QComboBox" name="lowestNoteBassComboBox"/>
           </item>
           <item row="2" column="1">
-           <widget class="QComboBox" name="comboBox_2"/>
+           <widget class="QComboBox" name="highestNoteBassComboBox"/>
           </item>
          </layout>
         </item>
         <item row="0" column="2">
-         <layout class="QGridLayout" name="gridLayout_8">
+         <layout class="QGridLayout" name="trebleGridLayout">
           <item row="0" column="0" colspan="2">
-           <widget class="QLabel" name="label_7">
+           <widget class="QLabel" name="trebleLabel">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -245,7 +245,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLabel" name="label_9">
+           <widget class="QLabel" name="highestNoteTrebleLabel">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -266,7 +266,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="label_8">
+           <widget class="QLabel" name="lowestNoteTrebleLabel">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -287,22 +287,22 @@
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QComboBox" name="comboBox_3"/>
+           <widget class="QComboBox" name="lowestNoteTrebleComboBox"/>
           </item>
           <item row="2" column="1">
-           <widget class="QComboBox" name="comboBox_4"/>
+           <widget class="QComboBox" name="highestNoteTrebleComboBox"/>
           </item>
          </layout>
         </item>
        </layout>
       </item>
       <item row="0" column="0">
-       <layout class="QGridLayout" name="gridLayout_3" rowstretch="0">
+       <layout class="QGridLayout" name="notesToDisplayGridLayout" rowstretch="0">
         <property name="sizeConstraint">
          <enum>QLayout::SetMaximumSize</enum>
         </property>
         <item row="0" column="1">
-         <widget class="QCheckBox" name="checkBox">
+         <widget class="QCheckBox" name="trebleCheckBox">
           <property name="font">
            <font>
             <pointsize>12</pointsize>
@@ -317,7 +317,7 @@
          </widget>
         </item>
         <item row="0" column="0">
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="notesToDisplayLabel">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
             <horstretch>0</horstretch>
@@ -335,7 +335,7 @@
          </widget>
         </item>
         <item row="0" column="2">
-         <widget class="QCheckBox" name="checkBox_2">
+         <widget class="QCheckBox" name="baseCheckBox">
           <property name="font">
            <font>
             <pointsize>12</pointsize>
