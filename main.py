@@ -52,6 +52,76 @@ def generateNewRandomKey():
 
 generateNewRandomKey()
 
+
+class ClefWidget(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+
+
+        self.width = 500
+        self.height = 200
+
+        self.setMinimumSize(self.width, self.height)
+
+        self.gClef = QtGui.QIcon("G-clef.svg")
+        self.gClefPixmap = self.gClef.pixmap(QSize(94, 160))
+
+    def drawNoteAt(self, painter, x, staffy):
+        y = (14 - staffy) * 10 + 50
+        # painter.rotate(-10)
+        # painter.drawEllipse(x, staffy*20+50 + (x/2) * math.sin(19 * math.pi / 180.0), 21, 16)
+        painter.drawEllipse(x, y, 20, 16)
+
+        if (staffy < 6. or staffy > 14.) and staffy % 2 == 0:
+            painter.drawLine(x - 10, y + 10, x + 30, y + 10)
+
+        if staffy < 4.:
+            painter.drawLine(x - 10, y + 10 - 10, x + 30, y + 10 - 10)
+
+        if staffy > 16.:
+            painter.drawLine(x - 10, y + 10 + 20, x + 30, y + 10 + 20)
+
+        painter.drawText(QPoint(self.width/2, 20), currNoteName)
+
+        # painter.rotate(10)
+        # painter.restore()
+
+    def paintEvent(self, e):
+        painter = QPainter(self)
+
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.HighQualityAntialiasing)
+
+
+        painter.setPen(QPen(Qt.black, 2, Qt.SolidLine))
+
+        painter.drawPixmap(QRect(0,22, self.gClefPixmap.width(), self.gClefPixmap.height()), self.gClefPixmap)
+        #print("keycode:", keycode)
+
+
+        painter.setBrush(QBrush(Qt.black, Qt.SolidPattern))
+
+        #draw staff
+        for y in range(5):
+            painter.drawLine(0, 10+20*y+48, self.width, 10+20*y+48)
+
+
+        global keycode
+        global randomkey
+        if keycode == randomkey:
+            painter.setPen(QPen(Qt.green, 2, Qt.SolidLine))
+            painter.setBrush(QBrush(Qt.green, Qt.SolidPattern))
+            generateNewRandomKey()
+
+        else:
+            painter.setPen(QPen(Qt.black, 2, Qt.SolidLine))
+            painter.setBrush(QBrush(Qt.black, Qt.SolidPattern))
+
+
+        self.drawNoteAt(painter, self.width/2, randomkeyindex)
+
+
 class AThread(QThread):
 
     def run(self):
@@ -79,25 +149,6 @@ class AThread(QThread):
                     event_post(m_e)
 
 
-def drawNoteAt(painter, x, staffy):
-    y = (14-staffy) * 10 + 50
-    #painter.rotate(-10)
-    #painter.drawEllipse(x, staffy*20+50 + (x/2) * math.sin(19 * math.pi / 180.0), 21, 16)
-    painter.drawEllipse(x, y, 20, 16)
-
-    if (staffy < 6. or staffy > 14.) and staffy % 2 == 0:
-        painter.drawLine(x-10,y+10, x+30, y+10)
-
-    if staffy < 4.:
-        painter.drawLine(x - 10, y + 10-10, x + 30, y + 10-10)
-
-    if staffy > 16.:
-        painter.drawLine(x - 10, y + 10+20, x + 30, y + 10+20)
-
-    painter.drawText(QPoint(50, 50), currNoteName)
-
-    #painter.rotate(10)
-    #painter.restore()
 
 
 #class Ui_MainWindow(object):
@@ -119,64 +170,34 @@ class MainWindow(QMainWindow):
         timer.start()
 
         self.centralwidget = QtWidgets.QWidget(self)
+        self.clefw = ClefWidget()
         self.setCentralWidget(self.centralwidget)
+
+        self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
+        self.gridLayout.setObjectName("gridLayout")
+
+
+        self.gridLayout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+
+        self.gridLayout.addWidget(self.clefw, 1, 0, 1, 1)
 
         self.top = 100
         self.left = 100
         self.width = 800
         self.height = 600
 
-        self.title = "MidiQuiz"
-        self.setObjectName(self.title)
+        #self.title = "MidiQuiz"
+        #self.setObjectName(self.title)
 
         #self.gClef = QtGui.QIcon("G-clef.svg")
         #self.gClefPixmap = self.gClef.pixmap(QSize(94, 160))
 
-        self.setWindowIcon(QtGui.QIcon("G-clef.svg"))
-        self.setWindowTitle(self.title)
+        #self.setWindowIcon(QtGui.QIcon("G-clef.svg"))
+        #self.setWindowTitle(self.title)
 
-        self.gameStarted = True
+        #self.gameStarted = True
         self.show()
 
-
-    def paintEvent(self, e):
-        if self.gameStarted:
-            painter = QPainter(self)
-
-            painter.setRenderHint(QPainter.Antialiasing)
-            painter.setRenderHint(QPainter.HighQualityAntialiasing)
-
-
-            painter.setPen(QPen(Qt.black, 2, Qt.SolidLine))
-
-            painter.drawPixmap(QRect(150,22, self.gClefPixmap.width(), self.gClefPixmap.height()), self.gClefPixmap)
-            #print("keycode:", keycode)
-
-
-
-            #painter.setBrush(QBrush(Qt.red, Qt.SolidPattern))
-            painter.setBrush(QBrush(Qt.black, Qt.SolidPattern))
-
-            #draw staff
-            for y in range(5):
-                painter.drawLine(150, 10+20*y+48, self.width-150, 10+20*y+48)
-
-
-            global keycode
-            global randomkey
-            if keycode == randomkey:
-                painter.setPen(QPen(Qt.red, 2, Qt.SolidLine))
-                generateNewRandomKey()
-                #global randomkeyindex
-                #randomkeyindex = random.randint(3, len(allgclefkeys) - 1-3)
-                #keycode = 0
-                #randomkey = allgclefkeys[randomkeyindex]
-                #print( "nytt randomkeyindex:", randomkeyindex)
-                #print("ny randomkey:", notename[randomkeyindex])
-            else:
-                painter.setPen(QPen(Qt.black, 2, Qt.SolidLine))
-
-            drawNoteAt(painter, self.width/2, randomkeyindex)
 
     def setupStartUi(self):
 
@@ -419,10 +440,6 @@ class MainWindow(QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(self)
 
         self.show()
-
-    def createGameWindow(self):
-
-        self.gw.exec_()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

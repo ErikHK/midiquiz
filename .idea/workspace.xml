@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2fbecd91-03a6-4cd3-9fe1-705dad9475c6" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,8 +17,8 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="449">
-              <caret line="443" column="23" lean-forward="false" selection-start-line="443" selection-start-column="23" selection-end-line="443" selection-end-column="23" />
+            <state relative-caret-position="337">
+              <caret line="180" column="0" lean-forward="true" selection-start-line="180" selection-start-column="0" selection-end-line="180" selection-end-column="0" />
               <folding>
                 <element signature="e#1#14#0" expanded="true" />
               </folding>
@@ -36,21 +37,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>drawline</find>
-      <find>currNoteName</find>
-      <find>gClef</find>
-      <find>Window</find>
-      <find>window(</find>
-      <find>setupUi</find>
-      <find>__init__</find>
-      <find>setObjectName</find>
-      <find>resize</find>
-      <find>setSizePolicy</find>
-      <find>MainWindow</find>
-      <find>super</find>
-      <find>def __init__</find>
-      <find>InitWindow</find>
-      <find>StartWindow</find>
       <find>start</find>
       <find>self.pushButton</find>
       <find>startbutt</find>
@@ -66,6 +52,21 @@
       <find>mainwin</find>
       <find>self.title</find>
       <find>setWindowTitle</find>
+      <find>.red</find>
+      <find>painteve</find>
+      <find>drawNoteAt</find>
+      <find>gamew</find>
+      <find>setCentralWidget</find>
+      <find>centralwidget</find>
+      <find>self.gridLayout</find>
+      <find>ClefWidget</find>
+      <find>gClefPixmap</find>
+      <find>AThread</find>
+      <find>drawtex</find>
+      <find>150,</find>
+      <find>drawpix</find>
+      <find>drawte</find>
+      <find>clefw</find>
     </findStrings>
     <replaceStrings>
       <replace>self.</replace>
@@ -240,8 +241,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="449">
-          <caret line="443" column="23" lean-forward="false" selection-start-line="443" selection-start-column="23" selection-end-line="443" selection-end-column="23" />
+        <state relative-caret-position="337">
+          <caret line="180" column="0" lean-forward="true" selection-start-line="180" selection-start-column="0" selection-end-line="180" selection-end-column="0" />
           <folding>
             <element signature="e#1#14#0" expanded="true" />
           </folding>
