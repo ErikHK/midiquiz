@@ -27,7 +27,13 @@ event_post = pygame.fastevent.post
 
 pygame.midi.init()
 input_id = pygame.midi.get_default_input_id()
-midiInput = pygame.midi.Input( input_id )
+
+#guess that MIDI exists
+midiInputExists = True
+try:
+    midiInput = pygame.midi.Input( input_id )
+except:
+    midiInputExists = False
 
 
 keycode = 0
@@ -48,8 +54,9 @@ def generateNewRandomKey():
     global currNoteName
     global keycode
     global randomkeyindex
+    global currNoteName
     randomkeyindex = random.randint(3, len(allgclefkeys) - 1 - 3)
-    # randomkeyindex = 3
+    #randomkeyindex = 4
 
     randomkey = allgclefkeys[randomkeyindex]
     #print(randomkey, notename[randomkeyindex])
@@ -100,13 +107,13 @@ class ClefWidget(QtWidgets.QWidget):
                                self.wholeNotePixmap)
 
         if (staffy < 6. or staffy > 14.) and staffy % 2 == 0:
-            painter.drawLine(x - 10, y + 10, x + 32, y + 10)
+            painter.drawLine(x - 10, y + 10, x + 38, y + 10)
 
         if staffy < 4.:
-            painter.drawLine(x - 10, y + 10 - 10, x + 32, y + 10 - 10)
+            painter.drawLine(x - 10, y + 10 - 10, x + 38, y + 10 - 10)
 
         if staffy > 16.:
-            painter.drawLine(x - 10, y + 10 + 20, x + 32, y + 10 + 20)
+            painter.drawLine(x - 10, y + 10 + 20, x + 38, y + 10 + 20)
 
 
         font = QFont()
@@ -188,8 +195,61 @@ class MainWindow(QMainWindow):
         timer = QTimer(self, timeout=self.repaint, interval=100)
         timer.start()
 
-        self.midiPollingTimer = QTimer(self, timeout=self.midiPolling, interval=100)
+        if midiInputExists:
+            self.midiPollingTimer = QTimer(self, timeout=self.midiPolling, interval=100)
+        else:
+            self.midiPollingTimer = QTimer(self, timeout=self.keyboardPolling, interval=100)
 
+    def keyPressEvent(self, event):
+        key = event.key()
+        if key == QtCore.Qt.Key_C and currNoteName == "C":
+            self.handleCorrectNotePressed()
+        elif key == QtCore.Qt.Key_D and currNoteName == "D":
+            self.handleCorrectNotePressed()
+        elif key == QtCore.Qt.Key_E and currNoteName == "E":
+            self.handleCorrectNotePressed()
+        elif key == QtCore.Qt.Key_F and currNoteName == "F":
+            self.handleCorrectNotePressed()
+        elif key == QtCore.Qt.Key_G and currNoteName == "G":
+            self.handleCorrectNotePressed()
+        elif key == QtCore.Qt.Key_A and currNoteName == "A":
+            self.handleCorrectNotePressed()
+        elif key == QtCore.Qt.Key_B and currNoteName == "B":
+            self.handleCorrectNotePressed()
+        else:
+            self.handleIncorrectNotePressed()
+        self.numberOfNotes += 1
+        self.accuracy = 100 * self.score / float(self.numberOfNotes)
+
+    def handleCorrectNotePressed(self):
+        self.clefWidget.drawGreen = True
+
+        self.lasttime = self.time2 - self.lasttime
+        self.timeForLastNote = f"{self.lasttime:.1f} s"
+        self.averageTimePerNoteList.append(self.lasttime)
+
+        self.lasttime = 0
+        self.time2 = 0
+
+        self.midiPollingTimer.stop()
+        self.repaint()
+        self.score += 1
+        time.sleep(.5)
+
+        generateNewRandomKey()
+        self.clefWidget.drawGreen = False
+        self.midiPollingTimer.start()
+
+    def handleIncorrectNotePressed(self):
+        self.clefWidget.drawRed = True
+        self.midiPollingTimer.stop()
+        self.repaint()
+        time.sleep(.5)
+        self.clefWidget.drawRed = False
+        self.midiPollingTimer.start()
+
+    def keyboardPolling(self):
+        pass
 
     def midiPolling(self):
         #print("midipolling")
@@ -259,6 +319,9 @@ class MainWindow(QMainWindow):
         timer = QTimer(self, timeout=self.increaseTime, interval=100)
         timer.start()
         self.midiPollingTimer.start()
+    def quitGame(self):
+        self.quit()
+        pass
 
     def setupGameUi(self):
         self.centralwidget = QtWidgets.QWidget(self)
@@ -272,9 +335,9 @@ class MainWindow(QMainWindow):
         self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout_2.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.pausePushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pausePushButton.setObjectName("pausePushButton")
-        self.gridLayout_2.addWidget(self.pausePushButton, 1, 1, 1, 1)
+        #self.pausePushButton = QtWidgets.QPushButton(self.centralwidget)
+        #self.pausePushButton.setObjectName("pausePushButton")
+        #self.gridLayout_2.addWidget(self.pausePushButton, 1, 1, 1, 1)
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
 
@@ -374,6 +437,7 @@ class MainWindow(QMainWindow):
         self.verticalLayout.addLayout(self.gridLayout)
         self.gridLayout_2.addLayout(self.verticalLayout, 0, 1, 1, 1)
         self.quitPushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.quitPushButton.clicked.connect(self.quitGame)
         self.quitPushButton.setObjectName("quitPushButton")
         self.gridLayout_2.addWidget(self.quitPushButton, 2, 1, 1, 1)
         self.setCentralWidget(self.centralwidget)
@@ -393,7 +457,7 @@ class MainWindow(QMainWindow):
     def retranslateGameUi(self):
         _translate = QtCore.QCoreApplication.translate
         #self.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.pausePushButton.setText(_translate("MainWindow", "Pause"))
+        #self.pausePushButton.setText(_translate("MainWindow", "Pause"))
         self.numberOfNotesGroupBox.setTitle(_translate("MainWindow", "Number of notes"))
         self.scoreGroupBox.setTitle(_translate("MainWindow", "Score"))
         self.scoreDescLabel.setText(_translate("MainWindow", "Score:"))
@@ -696,6 +760,8 @@ class MainWindow(QMainWindow):
         self.startPushButtonGridLayout.setContentsMargins(20, 20, 20, 20)
         self.startPushButtonGridLayout.setObjectName("startPushButtonGridLayout")
         self.startPushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.startPushButton.setFocus(True)
+
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
