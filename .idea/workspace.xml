@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2fbecd91-03a6-4cd3-9fe1-705dad9475c6" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
-      <change beforePath="$PROJECT_DIR$/startLayout.ui" afterPath="$PROJECT_DIR$/startLayout.ui" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -17,8 +17,8 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="337">
-              <caret line="239" column="28" lean-forward="false" selection-start-line="239" selection-start-column="28" selection-end-line="239" selection-end-column="28" />
+            <state relative-caret-position="113">
+              <caret line="223" column="51" lean-forward="false" selection-start-line="223" selection-start-column="51" selection-end-line="223" selection-end-column="51" />
               <folding>
                 <element signature="e#1#14#0" expanded="true" />
               </folding>
@@ -37,12 +37,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>MainWindow</find>
-      <find>startb</find>
-      <find>startButton</find>
-      <find>connect</find>
-      <find>con</find>
-      <find>conn</find>
       <find>drawNoteAt</find>
       <find>lowestnotebasscom</find>
       <find>.additem</find>
@@ -62,11 +56,17 @@
       <find>self.tim</find>
       <find>timelab</find>
       <find>retranslateUi</find>
-      <find>clefw</find>
       <find>mainwindow</find>
       <find>(24)</find>
       <find>clefwi</find>
       <find>numberofnote</find>
+      <find>verticalLayout</find>
+      <find>stre</find>
+      <find>setHorizontalStretch</find>
+      <find>sizePolicy.setHorizontalStretch(0)</find>
+      <find>clefw</find>
+      <find>self.setSizePolicy</find>
+      <find>vboxla</find>
     </findStrings>
     <replaceStrings>
       <replace>self.</replace>
@@ -241,8 +241,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="337">
-          <caret line="239" column="28" lean-forward="false" selection-start-line="239" selection-start-column="28" selection-end-line="239" selection-end-column="28" />
+        <state relative-caret-position="113">
+          <caret line="223" column="51" lean-forward="false" selection-start-line="223" selection-start-column="51" selection-end-line="223" selection-end-column="51" />
           <folding>
             <element signature="e#1#14#0" expanded="true" />
           </folding>

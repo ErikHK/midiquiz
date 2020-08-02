@@ -209,7 +209,7 @@ class MainWindow(QMainWindow):
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())
-        self.setSizePolicy(sizePolicy)
+        #self.setSizePolicy(sizePolicy)
         self.centralwidget = QtWidgets.QWidget(self)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
@@ -220,10 +220,24 @@ class MainWindow(QMainWindow):
         self.gridLayout_2.addWidget(self.pausePushButton, 1, 1, 1, 1)
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
+
+        #self.newgridl = QtWidgets.QGridLayout(self)
+
         self.clefWidget = ClefWidget()#QtWidgets.QOpenGLWidget(self.centralwidget)
         self.clefWidget.setObjectName("clefWidget")
-        self.verticalLayout.addWidget(self.clefWidget)
-        self.verticalLayout.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.clefWidgetGridLayout = QtWidgets.QGridLayout()
+        self.clefWidgetGridLayout.setObjectName("clefWidgetGridLayout")
+        #self.verticalLayout.setAlignment(QtCore.Qt.AlignRight)
+
+        #self.verticalLayout.addWidget(self.clefWidget)
+
+        #self.newgridl.addWidget(self.verticalLayout,1,1,1,1)
+        #self.newgridl.addWidget(self.clefWidget)
+        self.clefWidgetGridLayout.addWidget(self.clefWidget, 0, 0, 1, 1)
+        self.verticalLayout.addLayout(self.clefWidgetGridLayout)
+
+
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
         self.numberOfNotesGroupBox = QtWidgets.QGroupBox(self.centralwidget)
