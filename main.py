@@ -25,7 +25,7 @@ event_post = pygame.fastevent.post
 
 pygame.midi.init()
 input_id = pygame.midi.get_default_input_id()
-i = pygame.midi.Input( input_id )
+midiInput = pygame.midi.Input( input_id )
 
 
 keycode = 0
@@ -121,7 +121,7 @@ class ClefWidget(QtWidgets.QWidget):
         if keycode == randomkey:
             painter.setPen(QPen(Qt.green, 2, Qt.SolidLine))
             painter.setBrush(QBrush(Qt.green, Qt.SolidPattern))
-            generateNewRandomKey()
+            #generateNewRandomKey()
 
         else:
             painter.setPen(QPen(Qt.black, 2, Qt.SolidLine))
@@ -131,7 +131,7 @@ class ClefWidget(QtWidgets.QWidget):
         self.drawNoteAt(painter, self.width/2, randomkeyindex)
 
 
-class AThread(QThread):
+class MidiThread(QThread):
 
     def run(self):
         count = 0
@@ -145,8 +145,8 @@ class AThread(QThread):
                 if e.type in [KEYDOWN]:
                     going = False
 
-            if i.poll():
-                midi_events = i.read(10)
+            if midiInput.poll():
+                midi_events = midiInput.read(10)
                 # print "full midi_events " + str(midi_events)
                 print("my midi note is " + str(midi_events[0][0][1]))
                 global keycode
@@ -168,24 +168,78 @@ class MainWindow(QMainWindow):
 
         self.gameStarted = False
         self.time = 0.0
+        self.numberOfNotes = 0
+        self.timeForLastNote = -1
+        self.accuracy = -1
+
+        self.score = 0
+
+
         self.setupStartUi()
         #self.setupGameUi()
-        self.timeLabel = QtWidgets.QLabel("")
+
+        #repaint UI
+        timer = QTimer(self, timeout=self.repaint, interval=10)
+        timer.start()
+
+        self.midiPollingTimer = QTimer(self, timeout=self.midiPolling, interval=100)
+
+
+
+    def midiPolling(self):
+        #print("midipolling")
+        if midiInput.poll():
+            midi_events = midiInput.read(10)
+            # print "full midi_events " + str(midi_events)
+            print("my midi note is " + str(midi_events[0][0][1]))
+            global keycode
+            keycode = midi_events[0][0][1]
+            down = midi_events[0][0][2]
+
+            if keycode >= 36 and keycode <= 96:
+                if down:
+                    self.numberOfNotes += 1
+                    if keycode == randomkey:
+                        self.midiPollingTimer.stop()
+                        self.repaint()
+                        self.score += 1
+                        time.sleep(.5)
+
+                        generateNewRandomKey()
+                        self.midiPollingTimer.start()
+                    else:
+                        self.midiPollingTimer.stop()
+                        self.repaint()
+                        time.sleep(.5)
+                        self.midiPollingTimer.start()
+
 
     def increaseTime(self):
         self.time += .1
-        self.timeLabel.setText(str(datetime.timedelta(seconds=self.time)).rstrip('0'))
+
+        self.totalTimeLabel.setText(str(datetime.timedelta(seconds=int(self.time))))
+        if self.accuracy != -1:
+            self.accuracyLabel.setText(str(self.accuracy))
+        if self.timeForLastNote != -1:
+            self.timeForLastNoteLabel.setText(str(self.timeForLastNote))
+        self.numberOfNotesLabel.setText(str(self.numberOfNotes))
+
+        self.scoreLabel.setText(str(self.score))
 
 
     def startGame(self):
         self.setupGameUi()
+
         timer = QTimer(self, timeout=self.increaseTime, interval=100)
         timer.start()
 
+
+        self.midiPollingTimer.start()
+
     def setupGameUi(self):
-        thread = AThread()
-        # thread.finished.connect(app.exit)
-        thread.start()
+        #Midi polling thread
+        #thread = MidiThread()
+        #thread.start()
 
         #timer = QTimer(self, timeout=self.repaint, interval=100)
         #timer.start()
@@ -345,19 +399,19 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.pausePushButton.setText(_translate("MainWindow", "Pause"))
         self.numberOfNotesGroupBox.setTitle(_translate("MainWindow", "Number of notes"))
-        self.numberOfNotesLabel.setText(_translate("MainWindow", "TextLabel"))
+        #self.numberOfNotesLabel.setText(_translate("MainWindow", "TextLabel"))
         self.scoreGroupBox.setTitle(_translate("MainWindow", "Score"))
         self.scoreDescLabel.setText(_translate("MainWindow", "Score:"))
         self.accuracyDescLabel.setText(_translate("MainWindow", "Accuracy (%):"))
         self.scoreLabel.setText(_translate("MainWindow", "TextLabel"))
-        self.accuracyLabel.setText(_translate("MainWindow", "TextLabel"))
+        #self.accuracyLabel.setText(_translate("MainWindow", "TextLabel"))
         self.timeGroupBox.setTitle(_translate("MainWindow", "Time"))
         self.timeForLastNoteDescLabel.setText(_translate("MainWindow", "Time for last note:"))
         self.totalTimeDescLabel.setText(_translate("MainWindow", "Total time:"))
         self.averageTimePerNoteDescLabel.setText(_translate("MainWindow", "Average time per note:"))
-        self.totalTimeLabel.setText(_translate("MainWindow", "TextLabel"))
-        self.timeForLastNoteLabel.setText(_translate("MainWindow", "TextLabel"))
-        self.averageTimePerNoteLabel.setText(_translate("MainWindow", "TextLabel"))
+        #self.totalTimeLabel.setText(_translate("MainWindow", "TextLabel"))
+        #self.timeForLastNoteLabel.setText(_translate("MainWindow", "TextLabel"))
+        #self.averageTimePerNoteLabel.setText(_translate("MainWindow", "TextLabel"))
         self.quitPushButton.setText(_translate("MainWindow", "Quit"))
 
 

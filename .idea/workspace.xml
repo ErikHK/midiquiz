@@ -17,8 +17,8 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="113">
-              <caret line="223" column="51" lean-forward="false" selection-start-line="223" selection-start-column="51" selection-end-line="223" selection-end-column="51" />
+            <state relative-caret-position="433">
+              <caret line="215" column="0" lean-forward="true" selection-start-line="215" selection-start-column="0" selection-end-line="215" selection-end-column="0" />
               <folding>
                 <element signature="e#1#14#0" expanded="true" />
               </folding>
@@ -37,36 +37,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
+      <find>x =</find>
+      <find>y =</find>
       <find>drawNoteAt</find>
-      <find>lowestnotebasscom</find>
-      <find>.additem</find>
-      <find>fullnotena</find>
-      <find>fullnotenames</find>
-      <find>fullnotenamesg</find>
-      <find>trebleco</find>
-      <find>drawte</find>
-      <find>drawtex</find>
-      <find>currNoteName</find>
-      <find>treblech</find>
-      <find>timerad</find>
-      <find>minutess</find>
-      <find>clicked.c</find>
+      <find>keycode</find>
+      <find>global</find>
+      <find>setupga</find>
+      <find>startGame</find>
       <find>setupGameUi</find>
-      <find>QLabel</find>
-      <find>self.tim</find>
-      <find>timelab</find>
-      <find>retranslateUi</find>
-      <find>mainwindow</find>
-      <find>(24)</find>
-      <find>clefwi</find>
-      <find>numberofnote</find>
-      <find>verticalLayout</find>
-      <find>stre</find>
-      <find>setHorizontalStretch</find>
-      <find>sizePolicy.setHorizontalStretch(0)</find>
-      <find>clefw</find>
-      <find>self.setSizePolicy</find>
-      <find>vboxla</find>
+      <find>fullnotenamesf</find>
+      <find>retranslateStartUi</find>
+      <find>retranslateg</find>
+      <find>haer da</find>
+      <find>correctKeySignal</find>
+      <find>generateNewRandomKey</find>
+      <find>increaseTime</find>
+      <find>mainwindow(</find>
+      <find>self.time</find>
+      <find>totalTimeLabel</find>
+      <find>accuracylabel.sett</find>
+      <find>keycode ==</find>
+      <find>i.poll</find>
+      <find>MidiThread</find>
+      <find>midiPollingTimer</find>
+      <find>midiPolling</find>
+      <find>generatenew</find>
+      <find>pollin</find>
+      <find>midip</find>
+      <find>==</find>
+      <find>.green</find>
+      <find>== randomk</find>
     </findStrings>
     <replaceStrings>
       <replace>self.</replace>
@@ -239,10 +239,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://C:/Python38/Lib/site-packages/PyQt5/QtCore.pyi">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="30" column="8" lean-forward="false" selection-start-line="30" selection-start-column="8" selection-end-line="30" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="113">
-          <caret line="223" column="51" lean-forward="false" selection-start-line="223" selection-start-column="51" selection-end-line="223" selection-end-column="51" />
+        <state relative-caret-position="433">
+          <caret line="215" column="0" lean-forward="true" selection-start-line="215" selection-start-column="0" selection-end-line="215" selection-end-column="0" />
           <folding>
             <element signature="e#1#14#0" expanded="true" />
           </folding>
