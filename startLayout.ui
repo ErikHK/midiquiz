@@ -44,94 +44,6 @@
       <property name="sizeConstraint">
        <enum>QLayout::SetMaximumSize</enum>
       </property>
-      <item row="3" column="0">
-       <layout class="QGridLayout" name="timeOrNumberOfNotesGridLayout" rowstretch="0" rowminimumheight="0">
-        <property name="sizeConstraint">
-         <enum>QLayout::SetMaximumSize</enum>
-        </property>
-        <item row="0" column="0">
-         <widget class="QLabel" name="timeOrNumberOfNotesLabel">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>14</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Time or number of notes?</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <layout class="QGridLayout" name="timeGridLayout">
-          <item row="1" column="1">
-           <widget class="QLabel" name="minLabel">
-            <property name="text">
-             <string>min</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QSpinBox" name="minutesSpinBox">
-            <property name="buttonSymbols">
-             <enum>QAbstractSpinBox::UpDownArrows</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QCheckBox" name="unlimitedTimeCheckBox">
-            <property name="text">
-             <string>Unlimited</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="3">
-           <widget class="QRadioButton" name="timeRadioButton">
-            <property name="text">
-             <string>Time</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="0" column="2">
-         <layout class="QGridLayout" name="numberOfNotesGridLayout">
-          <property name="sizeConstraint">
-           <enum>QLayout::SetMaximumSize</enum>
-          </property>
-          <item row="1" column="1">
-           <widget class="QLabel" name="notesLabel">
-            <property name="text">
-             <string>notes</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QSpinBox" name="numberOfNotesSpinBox"/>
-          </item>
-          <item row="1" column="2">
-           <widget class="QCheckBox" name="unlimitedNotesCheckBox">
-            <property name="text">
-             <string>Unlimited</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="3">
-           <widget class="QRadioButton" name="numberOfNotesRadioButton">
-            <property name="text">
-             <string>Number of notes</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
       <item row="6" column="0">
        <layout class="QGridLayout" name="noteRangesGridLayout">
         <item row="0" column="0">
@@ -304,12 +216,127 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="0">
-       <layout class="QGridLayout" name="notesToDisplayGridLayout" rowstretch="0">
+      <item row="2" column="0">
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="Line" name="line_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="3" column="0">
+       <layout class="QGridLayout" name="timeOrNumberOfNotesGridLayout" rowstretch="0" rowminimumheight="0">
         <property name="sizeConstraint">
          <enum>QLayout::SetMaximumSize</enum>
         </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="timeOrNumberOfNotesLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>14</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Time or number of notes?</string>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="1">
+         <layout class="QGridLayout" name="timeGridLayout">
+          <item row="1" column="1">
+           <widget class="QLabel" name="minLabel">
+            <property name="text">
+             <string>min</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QSpinBox" name="minutesSpinBox">
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::UpDownArrows</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QCheckBox" name="unlimitedTimeCheckBox">
+            <property name="text">
+             <string>Unlimited</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="3">
+           <widget class="QRadioButton" name="timeRadioButton">
+            <property name="text">
+             <string>Time</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="2">
+         <layout class="QGridLayout" name="numberOfNotesGridLayout">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetMaximumSize</enum>
+          </property>
+          <item row="1" column="1">
+           <widget class="QLabel" name="notesLabel">
+            <property name="text">
+             <string>notes</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QSpinBox" name="numberOfNotesSpinBox"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QCheckBox" name="unlimitedNotesCheckBox">
+            <property name="text">
+             <string>Unlimited</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="3">
+           <widget class="QRadioButton" name="numberOfNotesRadioButton">
+            <property name="text">
+             <string>Number of notes</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="notesToDisplayGridLayout" rowstretch="0,0,0">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMaximumSize</enum>
+        </property>
+        <item row="0" column="1" colspan="2">
          <widget class="QCheckBox" name="trebleCheckBox">
           <property name="font">
            <font>
@@ -342,7 +369,7 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="2">
+        <item row="0" column="3" colspan="2">
          <widget class="QCheckBox" name="baseCheckBox">
           <property name="font">
            <font>
@@ -354,27 +381,51 @@
           </property>
          </widget>
         </item>
+        <item row="2" column="2">
+         <widget class="QComboBox" name="comboBox_2"/>
+        </item>
+        <item row="2" column="4">
+         <widget class="QComboBox" name="comboBox_4"/>
+        </item>
+        <item row="2" column="1">
+         <widget class="QComboBox" name="comboBox"/>
+        </item>
+        <item row="2" column="3">
+         <widget class="QComboBox" name="comboBox_3"/>
+        </item>
+        <item row="1" column="1" colspan="2">
+         <widget class="QLabel" name="label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Number of notes at a time (min/max):</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3" colspan="2">
+         <widget class="QLabel" name="label_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Number of notes at a time (min/max):</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
        </layout>
-      </item>
-      <item row="4" column="0">
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="2" column="0">
-       <widget class="Line" name="line">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
       </item>
       <item row="1" column="0">
        <spacer name="horizontalSpacer">
@@ -388,13 +439,6 @@
          </size>
         </property>
        </spacer>
-      </item>
-      <item row="5" column="0">
-       <widget class="Line" name="line_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
       </item>
      </layout>
     </item>
