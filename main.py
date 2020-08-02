@@ -52,22 +52,23 @@ def generateNewRandomKey():
     # randomkeyindex = 3
 
     randomkey = allgclefkeys[randomkeyindex]
-    print(randomkey, notename[randomkeyindex])
+    #print(randomkey, notename[randomkeyindex])
     currNoteName = notename[randomkeyindex]
 
 
 
 generateNewRandomKey()
 
-
 class ClefWidget(QtWidgets.QWidget):
+
     def __init__(self):
         super().__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
 
-
         self.width = 500
         self.height = 200
+        self.drawGreen = False
+        self.drawRed = False
 
         self.setMinimumSize(self.width, self.height)
 
@@ -93,7 +94,7 @@ class ClefWidget(QtWidgets.QWidget):
         font = QFont()
         font.setPointSize(14)
         painter.setFont(font)
-        painter.drawText(QPoint(self.width/2, 20), currNoteName)
+        #painter.drawText(QPoint(self.width/2, 20), currNoteName)
 
         # painter.rotate(10)
         # painter.restore()
@@ -118,55 +119,38 @@ class ClefWidget(QtWidgets.QWidget):
             painter.drawLine(0, 10+20*y+48, self.width, 10+20*y+48)
 
 
-        global keycode
-        global randomkey
-        if keycode == randomkey:
+        if self.drawRed:
+            painter.setPen(QPen(Qt.red, 2, Qt.SolidLine))
+            painter.setBrush(QBrush(Qt.red, Qt.SolidPattern))
+
+        if self.drawGreen:
             painter.setPen(QPen(Qt.green, 2, Qt.SolidLine))
             painter.setBrush(QBrush(Qt.green, Qt.SolidPattern))
+
+        #global keycode
+        #global randomkey
+        #if keycode == randomkey:
+        #    painter.setPen(QPen(Qt.green, 2, Qt.SolidLine))
+        #    painter.setBrush(QBrush(Qt.green, Qt.SolidPattern))
             #generateNewRandomKey()
 
-        else:
-            painter.setPen(QPen(Qt.black, 2, Qt.SolidLine))
-            painter.setBrush(QBrush(Qt.black, Qt.SolidPattern))
+        #else:
+        #    painter.setPen(QPen(Qt.black, 2, Qt.SolidLine))
+        #    painter.setBrush(QBrush(Qt.black, Qt.SolidPattern))
 
 
         self.drawNoteAt(painter, self.width/2, randomkeyindex)
 
 
-class MidiThread(QThread):
-
-    def run(self):
-        count = 0
-        while True:
-
-            count += 1
-            events = event_get()
-            for e in events:
-                if e.type in [QUIT]:
-                    going = False
-                if e.type in [KEYDOWN]:
-                    going = False
-
-            if midiInput.poll():
-                midi_events = midiInput.read(10)
-                # print "full midi_events " + str(midi_events)
-                print("my midi note is " + str(midi_events[0][0][1]))
-                global keycode
-                keycode = midi_events[0][0][1]
-                # convert them into pygame events.
-                midi_evs = pygame.midi.midis2events(midi_events, i.device_id)
-
-                for m_e in midi_evs:
-                    event_post(m_e)
-
-
-
-
-#class Ui_MainWindow(object):
 class MainWindow(QMainWindow):
 
-    def __init__(self):
+    def testtest(self):
+        pass
+
+    def __init__(self, clefWidget):
         super().__init__()
+
+        self.clefWidget = clefWidget
 
         self.gameStarted = False
         self.time = 0.0
@@ -177,21 +161,16 @@ class MainWindow(QMainWindow):
         self.averageTimePerNoteList = []
         self.averageTimePerNote = 0
 
-
-
         self.lasttime = 0
         self.score = 0
 
-
         self.setupStartUi()
-        #self.setupGameUi()
 
         #repaint UI
-        timer = QTimer(self, timeout=self.repaint, interval=10)
+        timer = QTimer(self, timeout=self.repaint, interval=100)
         timer.start()
 
         self.midiPollingTimer = QTimer(self, timeout=self.midiPolling, interval=100)
-
 
 
     def midiPolling(self):
@@ -199,11 +178,11 @@ class MainWindow(QMainWindow):
         if midiInput.poll():
             midi_events = midiInput.read(10)
             # print "full midi_events " + str(midi_events)
-            print("my midi note is " + str(midi_events[0][0][1]))
+            #print("my midi note is " + str(midi_events[0][0][1]))
             global keycode
             keycode = midi_events[0][0][1]
             down = midi_events[0][0][2]
-            print(down)
+            #print(down)
 
             if keycode >= 36 and keycode <= 96:
                 if down:
@@ -211,8 +190,10 @@ class MainWindow(QMainWindow):
                     self.numberOfNotes += 1
 
                     if keycode == randomkey:
+                        self.clefWidget.drawGreen = True
+
                         self.lasttime = self.time2 - self.lasttime
-                        self.timeForLastNote = f"{self.lasttime:.2f} s"
+                        self.timeForLastNote = f"{self.lasttime:.1f} s"
                         self.averageTimePerNoteList.append(self.lasttime)
 
                         self.lasttime = 0
@@ -224,11 +205,14 @@ class MainWindow(QMainWindow):
                         time.sleep(.5)
 
                         generateNewRandomKey()
+                        self.clefWidget.drawGreen = False
                         self.midiPollingTimer.start()
                     else:
+                        self.clefWidget.drawRed = True
                         self.midiPollingTimer.stop()
                         self.repaint()
                         time.sleep(.5)
+                        self.clefWidget.drawRed = False
                         self.midiPollingTimer.start()
                     self.accuracy = 100 * self.score / float(self.numberOfNotes)
 
@@ -236,10 +220,10 @@ class MainWindow(QMainWindow):
     def increaseTime(self):
         self.time += .1
         self.time2 += .1
-        print(self.time)
+        #print(self.time)
         self.totalTimeLabel.setText(str(datetime.timedelta(seconds=int(self.time))))
         if self.accuracy != -1:
-            self.accuracyLabel.setText(f"{self.accuracy:.2f}" + " %")
+            self.accuracyLabel.setText(f"{self.accuracy:.1f}" + " %")
         if self.timeForLastNote != -1:
             self.timeForLastNoteLabel.setText(str(self.timeForLastNote))
         self.numberOfNotesLabel.setText(str(self.numberOfNotes))
@@ -252,40 +236,14 @@ class MainWindow(QMainWindow):
         self.averageTimePerNoteLabel.setText(f"{self.averageTimePerNote : .2f} s")
 
 
-
-
     def startGame(self):
         self.setupGameUi()
-
         timer = QTimer(self, timeout=self.increaseTime, interval=100)
         timer.start()
-
-
         self.midiPollingTimer.start()
 
     def setupGameUi(self):
-        #Midi polling thread
-        #thread = MidiThread()
-        #thread.start()
-
-        #timer = QTimer(self, timeout=self.repaint, interval=100)
-        #timer.start()
-
         self.centralwidget = QtWidgets.QWidget(self)
-        #self.clefw = ClefWidget()
-        #self.setCentralWidget(self.centralwidget)
-
-        #self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
-        #self.gridLayout.setObjectName("gridLayout")
-
-
-        #self.gridLayout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
-
-        #self.gridLayout.addWidget(self.clefw, 1, 0, 1, 1)
-
-        #self.timeLabel.setText((str(self.time)))
-        #self.gridLayout.addWidget(self.timeLabel, 2, 0, 1, 2)
-
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -302,19 +260,12 @@ class MainWindow(QMainWindow):
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
 
-        #self.newgridl = QtWidgets.QGridLayout(self)
-
-        self.clefWidget = ClefWidget()#QtWidgets.QOpenGLWidget(self.centralwidget)
+        #self.clefWidget = ClefWidget()#QtWidgets.QOpenGLWidget(self.centralwidget)
         self.clefWidget.setObjectName("clefWidget")
 
         self.clefWidgetGridLayout = QtWidgets.QGridLayout()
         self.clefWidgetGridLayout.setObjectName("clefWidgetGridLayout")
-        #self.verticalLayout.setAlignment(QtCore.Qt.AlignRight)
 
-        #self.verticalLayout.addWidget(self.clefWidget)
-
-        #self.newgridl.addWidget(self.verticalLayout,1,1,1,1)
-        #self.newgridl.addWidget(self.clefWidget)
         self.clefWidgetGridLayout.addWidget(self.clefWidget, 0, 0, 1, 1)
         self.verticalLayout.addLayout(self.clefWidgetGridLayout)
 
@@ -426,19 +377,14 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.pausePushButton.setText(_translate("MainWindow", "Pause"))
         self.numberOfNotesGroupBox.setTitle(_translate("MainWindow", "Number of notes"))
-        #self.numberOfNotesLabel.setText(_translate("MainWindow", "TextLabel"))
         self.scoreGroupBox.setTitle(_translate("MainWindow", "Score"))
         self.scoreDescLabel.setText(_translate("MainWindow", "Score:"))
-        self.accuracyDescLabel.setText(_translate("MainWindow", "Accuracy (%):"))
+        self.accuracyDescLabel.setText(_translate("MainWindow", "Accuracy:"))
         self.scoreLabel.setText(_translate("MainWindow", "TextLabel"))
-        #self.accuracyLabel.setText(_translate("MainWindow", "TextLabel"))
         self.timeGroupBox.setTitle(_translate("MainWindow", "Time"))
         self.timeForLastNoteDescLabel.setText(_translate("MainWindow", "Time for last note:"))
         self.totalTimeDescLabel.setText(_translate("MainWindow", "Total time:"))
         self.averageTimePerNoteDescLabel.setText(_translate("MainWindow", "Average time per note:"))
-        #self.totalTimeLabel.setText(_translate("MainWindow", "TextLabel"))
-        #self.timeForLastNoteLabel.setText(_translate("MainWindow", "TextLabel"))
-        #self.averageTimePerNoteLabel.setText(_translate("MainWindow", "TextLabel"))
         self.quitPushButton.setText(_translate("MainWindow", "Quit"))
 
 
@@ -700,7 +646,6 @@ class MainWindow(QMainWindow):
         self.statusbar = QtWidgets.QStatusBar(self)
         self.statusbar.setObjectName("statusbar")
         self.setStatusBar(self.statusbar)
-
         self.retranslateStartUi()
         QtCore.QMetaObject.connectSlotsByName(self)
         self.show()
@@ -728,9 +673,7 @@ class MainWindow(QMainWindow):
         self.baseCheckBox.setText(_translate("MainWindow", "Bass"))
 
 
-
-
-
 App = QApplication(sys.argv)
-window = MainWindow()
+clefWidget = ClefWidget()
+window = MainWindow(clefWidget)
 sys.exit(App.exec())
