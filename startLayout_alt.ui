@@ -443,12 +443,37 @@
           </item>
          </layout>
         </item>
+        <item row="5" column="0">
+         <layout class="QGridLayout" name="gridLayout_25"/>
+        </item>
         <item row="5" column="2" colspan="2">
-         <widget class="QPushButton" name="pushButton">
-          <property name="text">
-           <string>Start</string>
+         <layout class="QGridLayout" name="gridLayout_26">
+          <property name="leftMargin">
+           <number>20</number>
           </property>
-         </widget>
+          <property name="topMargin">
+           <number>20</number>
+          </property>
+          <property name="rightMargin">
+           <number>20</number>
+          </property>
+          <property name="bottomMargin">
+           <number>20</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="pushButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Start</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
