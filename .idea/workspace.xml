@@ -17,8 +17,8 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="232" column="57" lean-forward="false" selection-start-line="232" selection-start-column="57" selection-end-line="232" selection-end-column="57" />
+            <state relative-caret-position="337">
+              <caret line="239" column="28" lean-forward="false" selection-start-line="239" selection-start-column="28" selection-end-line="239" selection-end-column="28" />
               <folding>
                 <element signature="e#1#14#0" expanded="true" />
               </folding>
@@ -37,36 +37,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>createGameWindow</find>
-      <find>startButton.clicked</find>
-      <find>retrans</find>
-      <find>.connect</find>
-      <find>setupGameUi</find>
-      <find>height</find>
-      <find>mainwin</find>
-      <find>self.title</find>
-      <find>setWindowTitle</find>
-      <find>.red</find>
-      <find>painteve</find>
-      <find>drawNoteAt</find>
-      <find>gamew</find>
-      <find>setCentralWidget</find>
-      <find>centralwidget</find>
-      <find>self.gridLayout</find>
-      <find>ClefWidget</find>
-      <find>gClefPixmap</find>
-      <find>AThread</find>
-      <find>drawtex</find>
-      <find>150,</find>
-      <find>drawpix</find>
-      <find>drawte</find>
-      <find>clefw</find>
       <find>MainWindow</find>
       <find>startb</find>
       <find>startButton</find>
       <find>connect</find>
       <find>con</find>
       <find>conn</find>
+      <find>drawNoteAt</find>
+      <find>lowestnotebasscom</find>
+      <find>.additem</find>
+      <find>fullnotena</find>
+      <find>fullnotenames</find>
+      <find>fullnotenamesg</find>
+      <find>trebleco</find>
+      <find>drawte</find>
+      <find>drawtex</find>
+      <find>currNoteName</find>
+      <find>treblech</find>
+      <find>timerad</find>
+      <find>minutess</find>
+      <find>clicked.c</find>
+      <find>setupGameUi</find>
+      <find>QLabel</find>
+      <find>self.tim</find>
+      <find>timelab</find>
+      <find>retranslateUi</find>
+      <find>clefw</find>
+      <find>mainwindow</find>
+      <find>(24)</find>
+      <find>clefwi</find>
+      <find>numberofnote</find>
     </findStrings>
     <replaceStrings>
       <replace>self.</replace>
@@ -241,8 +241,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="232" column="57" lean-forward="false" selection-start-line="232" selection-start-column="57" selection-end-line="232" selection-end-column="57" />
+        <state relative-caret-position="337">
+          <caret line="239" column="28" lean-forward="false" selection-start-line="239" selection-start-column="28" selection-end-line="239" selection-end-column="28" />
           <folding>
             <element signature="e#1#14#0" expanded="true" />
           </folding>

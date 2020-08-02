@@ -3,12 +3,13 @@ import pygame
 import pygame.midi
 from pygame.locals import *
 import math
+import datetime
 
 import random
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtGui import QPainter, QBrush, QPen
+from PyQt5.QtGui import QPainter, QBrush, QPen, QFont
 from PyQt5.QtCore import Qt
 
 from PyQt5.QtCore import (QCoreApplication, QObject, QRunnable, QThread,
@@ -31,6 +32,10 @@ keycode = 0
 
 allgclefkeys = [53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84]
 notename = ["F", "G", "A", "B", "C", "D", "E", "F", "G", "A", "B", "C", "D", "E", "F", "G", "A", "B", "C"]
+
+fullnotenamesf = ["A1", "B2", "C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4"]
+fullnotenamesg = ["F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6"]
+
 
 randomkeyindex = 3
 
@@ -82,6 +87,10 @@ class ClefWidget(QtWidgets.QWidget):
         if staffy > 16.:
             painter.drawLine(x - 10, y + 10 + 20, x + 30, y + 10 + 20)
 
+
+        font = QFont()
+        font.setPointSize(14)
+        painter.setFont(font)
         painter.drawText(QPoint(self.width/2, 20), currNoteName)
 
         # painter.rotate(10)
@@ -158,45 +167,187 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.gameStarted = False
+        self.time = 0.0
         self.setupStartUi()
         #self.setupGameUi()
+        self.timeLabel = QtWidgets.QLabel("")
+
+    def increaseTime(self):
+        self.time += .1
+        self.timeLabel.setText(str(datetime.timedelta(seconds=self.time)).rstrip('0'))
+
+
+    def startGame(self):
+        self.setupGameUi()
+        timer = QTimer(self, timeout=self.increaseTime, interval=100)
+        timer.start()
 
     def setupGameUi(self):
         thread = AThread()
         # thread.finished.connect(app.exit)
         thread.start()
 
-        timer = QTimer(self, timeout=self.repaint, interval=100)
-        timer.start()
+        #timer = QTimer(self, timeout=self.repaint, interval=100)
+        #timer.start()
 
         self.centralwidget = QtWidgets.QWidget(self)
-        self.clefw = ClefWidget()
-        self.setCentralWidget(self.centralwidget)
+        #self.clefw = ClefWidget()
+        #self.setCentralWidget(self.centralwidget)
 
-        self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
+        #self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
+        #self.gridLayout.setObjectName("gridLayout")
+
+
+        #self.gridLayout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+
+        #self.gridLayout.addWidget(self.clefw, 1, 0, 1, 1)
+
+        #self.timeLabel.setText((str(self.time)))
+        #self.gridLayout.addWidget(self.timeLabel, 2, 0, 1, 2)
+
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())
+        self.setSizePolicy(sizePolicy)
+        self.centralwidget = QtWidgets.QWidget(self)
+        self.centralwidget.setObjectName("centralwidget")
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
+        self.gridLayout_2.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.pausePushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.pausePushButton.setObjectName("pausePushButton")
+        self.gridLayout_2.addWidget(self.pausePushButton, 1, 1, 1, 1)
+        self.verticalLayout = QtWidgets.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.clefWidget = ClefWidget()#QtWidgets.QOpenGLWidget(self.centralwidget)
+        self.clefWidget.setObjectName("clefWidget")
+        self.verticalLayout.addWidget(self.clefWidget)
+        self.verticalLayout.setAlignment(QtCore.Qt.AlignCenter)
+        self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
+        self.numberOfNotesGroupBox = QtWidgets.QGroupBox(self.centralwidget)
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.numberOfNotesGroupBox.setFont(font)
+        self.numberOfNotesGroupBox.setObjectName("numberOfNotesGroupBox")
+        self.gridLayout_7 = QtWidgets.QGridLayout(self.numberOfNotesGroupBox)
+        self.gridLayout_7.setObjectName("gridLayout_7")
+        self.numberOfNotesGridLayout = QtWidgets.QGridLayout()
+        self.numberOfNotesGridLayout.setObjectName("numberOfNotesGridLayout")
+        self.numberOfNotesLabel = QtWidgets.QLabel(self.numberOfNotesGroupBox)
+        font = QtGui.QFont()
+        font.setPointSize(24)
+        self.numberOfNotesLabel.setFont(font)
+        self.numberOfNotesLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.numberOfNotesLabel.setObjectName("numberOfNotesLabel")
+        self.numberOfNotesGridLayout.addWidget(self.numberOfNotesLabel, 0, 0, 1, 1)
+        self.gridLayout_7.addLayout(self.numberOfNotesGridLayout, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.numberOfNotesGroupBox, 1, 0, 1, 1)
+        self.scoreGroupBox = QtWidgets.QGroupBox(self.centralwidget)
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.scoreGroupBox.setFont(font)
+        self.scoreGroupBox.setObjectName("scoreGroupBox")
+        self.gridLayout_9 = QtWidgets.QGridLayout(self.scoreGroupBox)
+        self.gridLayout_9.setObjectName("gridLayout_9")
+        self.scoreGridLayout = QtWidgets.QGridLayout()
+        self.scoreGridLayout.setObjectName("scoreGridLayout")
+        self.scoreDescLabel = QtWidgets.QLabel(self.scoreGroupBox)
+        self.scoreDescLabel.setObjectName("scoreDescLabel")
+        self.scoreGridLayout.addWidget(self.scoreDescLabel, 0, 0, 1, 1)
+        self.accuracyDescLabel = QtWidgets.QLabel(self.scoreGroupBox)
+        self.accuracyDescLabel.setObjectName("accuracyDescLabel")
+        self.scoreGridLayout.addWidget(self.accuracyDescLabel, 1, 0, 1, 1)
+        self.scoreLabel = QtWidgets.QLabel(self.scoreGroupBox)
+        font = QtGui.QFont()
+        font.setPointSize(24)
+        self.scoreLabel.setFont(font)
+        self.scoreLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.scoreLabel.setObjectName("scoreLabel")
+        self.scoreGridLayout.addWidget(self.scoreLabel, 0, 1, 1, 1)
+        self.accuracyLabel = QtWidgets.QLabel(self.scoreGroupBox)
+        font = QtGui.QFont()
+        font.setPointSize(24)
+        self.accuracyLabel.setFont(font)
+        self.accuracyLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.accuracyLabel.setObjectName("accuracyLabel")
+        self.scoreGridLayout.addWidget(self.accuracyLabel, 1, 1, 1, 1)
+        self.gridLayout_9.addLayout(self.scoreGridLayout, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.scoreGroupBox, 0, 2, 2, 1)
+        self.timeGroupBox = QtWidgets.QGroupBox(self.centralwidget)
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.timeGroupBox.setFont(font)
+        self.timeGroupBox.setObjectName("timeGroupBox")
+        self.gridLayout_5 = QtWidgets.QGridLayout(self.timeGroupBox)
+        self.gridLayout_5.setObjectName("gridLayout_5")
+        self.timeGridLayout = QtWidgets.QGridLayout()
+        self.timeGridLayout.setObjectName("timeGridLayout")
+        self.timeForLastNoteDescLabel = QtWidgets.QLabel(self.timeGroupBox)
+        self.timeForLastNoteDescLabel.setObjectName("timeForLastNoteDescLabel")
+        self.timeGridLayout.addWidget(self.timeForLastNoteDescLabel, 1, 0, 1, 1)
+        self.totalTimeDescLabel = QtWidgets.QLabel(self.timeGroupBox)
+        self.totalTimeDescLabel.setObjectName("totalTimeDescLabel")
+        self.timeGridLayout.addWidget(self.totalTimeDescLabel, 0, 0, 1, 1)
+        self.averageTimePerNoteDescLabel = QtWidgets.QLabel(self.timeGroupBox)
+        self.averageTimePerNoteDescLabel.setObjectName("averageTimePerNoteDescLabel")
+        self.timeGridLayout.addWidget(self.averageTimePerNoteDescLabel, 2, 0, 1, 1)
+        self.totalTimeLabel = QtWidgets.QLabel(self.timeGroupBox)
+        self.totalTimeLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
+        self.totalTimeLabel.setObjectName("totalTimeLabel")
+        self.timeGridLayout.addWidget(self.totalTimeLabel, 0, 1, 1, 1)
+        self.timeForLastNoteLabel = QtWidgets.QLabel(self.timeGroupBox)
+        self.timeForLastNoteLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
+        self.timeForLastNoteLabel.setObjectName("timeForLastNoteLabel")
+        self.timeGridLayout.addWidget(self.timeForLastNoteLabel, 1, 1, 1, 1)
+        self.averageTimePerNoteLabel = QtWidgets.QLabel(self.timeGroupBox)
+        self.averageTimePerNoteLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
+        self.averageTimePerNoteLabel.setObjectName("averageTimePerNoteLabel")
+        self.timeGridLayout.addWidget(self.averageTimePerNoteLabel, 2, 1, 1, 1)
+        self.gridLayout_5.addLayout(self.timeGridLayout, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.timeGroupBox, 0, 0, 1, 1)
+        self.verticalLayout.addLayout(self.gridLayout)
+        self.gridLayout_2.addLayout(self.verticalLayout, 0, 1, 1, 1)
+        self.quitPushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.quitPushButton.setObjectName("quitPushButton")
+        self.gridLayout_2.addWidget(self.quitPushButton, 2, 1, 1, 1)
+        self.setCentralWidget(self.centralwidget)
+        self.statusbar = QtWidgets.QStatusBar(self)
+        self.statusbar.setObjectName("statusbar")
+        self.setStatusBar(self.statusbar)
+        self.menubar = QtWidgets.QMenuBar(self)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 805, 18))
+        self.menubar.setObjectName("menubar")
+        self.setMenuBar(self.menubar)
 
-
-        self.gridLayout.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
-
-        self.gridLayout.addWidget(self.clefw, 1, 0, 1, 1)
-
-        self.top = 100
-        self.left = 100
-        self.width = 800
-        self.height = 600
-
-        #self.title = "MidiQuiz"
-        #self.setObjectName(self.title)
-
-        #self.gClef = QtGui.QIcon("G-clef.svg")
-        #self.gClefPixmap = self.gClef.pixmap(QSize(94, 160))
-
-        #self.setWindowIcon(QtGui.QIcon("G-clef.svg"))
-        #self.setWindowTitle(self.title)
-
-        #self.gameStarted = True
+        self.retranslateGameUi()
+        QtCore.QMetaObject.connectSlotsByName(self)
         self.show()
+
+
+    def retranslateGameUi(self):
+        _translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.pausePushButton.setText(_translate("MainWindow", "Pause"))
+        self.numberOfNotesGroupBox.setTitle(_translate("MainWindow", "Number of notes"))
+        self.numberOfNotesLabel.setText(_translate("MainWindow", "TextLabel"))
+        self.scoreGroupBox.setTitle(_translate("MainWindow", "Score"))
+        self.scoreDescLabel.setText(_translate("MainWindow", "Score:"))
+        self.accuracyDescLabel.setText(_translate("MainWindow", "Accuracy (%):"))
+        self.scoreLabel.setText(_translate("MainWindow", "TextLabel"))
+        self.accuracyLabel.setText(_translate("MainWindow", "TextLabel"))
+        self.timeGroupBox.setTitle(_translate("MainWindow", "Time"))
+        self.timeForLastNoteDescLabel.setText(_translate("MainWindow", "Time for last note:"))
+        self.totalTimeDescLabel.setText(_translate("MainWindow", "Total time:"))
+        self.averageTimePerNoteDescLabel.setText(_translate("MainWindow", "Average time per note:"))
+        self.totalTimeLabel.setText(_translate("MainWindow", "TextLabel"))
+        self.timeForLastNoteLabel.setText(_translate("MainWindow", "TextLabel"))
+        self.averageTimePerNoteLabel.setText(_translate("MainWindow", "TextLabel"))
+        self.quitPushButton.setText(_translate("MainWindow", "Quit"))
+
+
+
 
 
     def setupStartUi(self):
@@ -230,7 +381,7 @@ class MainWindow(QMainWindow):
         self.startButton.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.startButton.setObjectName("startButton")
         self.gridLayout.addWidget(self.startButton, 1, 0, 1, 1)
-        self.startButton.clicked.connect(self.setupGameUi)
+        self.startButton.clicked.connect(self.startGame)
 
         self.mainGridLayout = QtWidgets.QGridLayout()
         self.mainGridLayout.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
@@ -256,12 +407,14 @@ class MainWindow(QMainWindow):
         self.timeGridLayout.addWidget(self.minLabel, 1, 1, 1, 1)
         self.minutesSpinBox = QtWidgets.QSpinBox(self.centralwidget)
         self.minutesSpinBox.setObjectName("minutesSpinBox")
+        self.minutesSpinBox.setValue(1)
         self.timeGridLayout.addWidget(self.minutesSpinBox, 1, 0, 1, 1)
         self.unlimitedTimeCheckBox = QtWidgets.QCheckBox(self.centralwidget)
         self.unlimitedTimeCheckBox.setObjectName("unlimitedTimeCheckBox")
         self.timeGridLayout.addWidget(self.unlimitedTimeCheckBox, 1, 2, 1, 1)
         self.timeRadioButton = QtWidgets.QRadioButton(self.centralwidget)
         self.timeRadioButton.setObjectName("timeRadioButton")
+        self.timeRadioButton.setChecked(True)
         self.timeGridLayout.addWidget(self.timeRadioButton, 0, 0, 1, 3)
         self.timeOrNumberOfNotesGridLayout.addLayout(self.timeGridLayout, 0, 1, 1, 1)
         self.numberOfNotesGridLayout = QtWidgets.QGridLayout()
@@ -272,6 +425,7 @@ class MainWindow(QMainWindow):
         self.numberOfNotesGridLayout.addWidget(self.notesLabel, 1, 1, 1, 1)
         self.numberOfNotesSpinBox = QtWidgets.QSpinBox(self.centralwidget)
         self.numberOfNotesSpinBox.setObjectName("numberOfNotesSpinBox")
+        self.numberOfNotesSpinBox.setValue(50)
         self.numberOfNotesGridLayout.addWidget(self.numberOfNotesSpinBox, 1, 0, 1, 1)
         self.unlimitedNotesCheckBox = QtWidgets.QCheckBox(self.centralwidget)
         self.unlimitedNotesCheckBox.setObjectName("unlimitedNotesCheckBox")
@@ -332,12 +486,18 @@ class MainWindow(QMainWindow):
         self.lowestNoteBassLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.lowestNoteBassLabel.setObjectName("lowestNoteBassLabel")
         self.bassGridLayout.addWidget(self.lowestNoteBassLabel, 1, 0, 1, 1)
+
         self.lowestNoteBassComboBox = QtWidgets.QComboBox(self.centralwidget)
         self.lowestNoteBassComboBox.setObjectName("lowestNoteBassComboBox")
+        self.lowestNoteBassComboBox.addItems(fullnotenamesf)
         self.bassGridLayout.addWidget(self.lowestNoteBassComboBox, 2, 0, 1, 1)
+
         self.highestNoteBassComboBox = QtWidgets.QComboBox(self.centralwidget)
         self.highestNoteBassComboBox.setObjectName("highestNoteBassComboBox")
+        self.highestNoteBassComboBox.addItems(fullnotenamesf)
+        self.highestNoteBassComboBox.setCurrentIndex(len(fullnotenamesf)-1)
         self.bassGridLayout.addWidget(self.highestNoteBassComboBox, 2, 1, 1, 1)
+
         self.noteRangesGridLayout.addLayout(self.bassGridLayout, 0, 1, 1, 1)
         self.trebleGridLayout = QtWidgets.QGridLayout()
         self.trebleGridLayout.setObjectName("trebleGridLayout")
@@ -373,22 +533,31 @@ class MainWindow(QMainWindow):
         self.lowestNoteTrebleLabel.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setPointSize(12)
+
         self.lowestNoteTrebleLabel.setFont(font)
         self.lowestNoteTrebleLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.lowestNoteTrebleLabel.setObjectName("lowestNoteTrebleLabel")
         self.trebleGridLayout.addWidget(self.lowestNoteTrebleLabel, 1, 0, 1, 1)
+
         self.lowestNoteTrebleComboBox = QtWidgets.QComboBox(self.centralwidget)
         self.lowestNoteTrebleComboBox.setObjectName("lowestNoteTrebleComboBox")
+        self.lowestNoteTrebleComboBox.addItems(fullnotenamesg)
+        self.lowestNoteTrebleComboBox.setEnabled(True)
         self.trebleGridLayout.addWidget(self.lowestNoteTrebleComboBox, 2, 0, 1, 1)
+
         self.highestNoteTrebleComboBox = QtWidgets.QComboBox(self.centralwidget)
         self.highestNoteTrebleComboBox.setObjectName("highestNoteTrebleComboBox")
+        self.highestNoteTrebleComboBox.addItems(fullnotenamesg)
+        self.highestNoteTrebleComboBox.setCurrentIndex(len(fullnotenamesg)-1)
         self.trebleGridLayout.addWidget(self.highestNoteTrebleComboBox, 2, 1, 1, 1)
+
         self.noteRangesGridLayout.addLayout(self.trebleGridLayout, 0, 2, 1, 1)
         self.mainGridLayout.addLayout(self.noteRangesGridLayout, 6, 0, 1, 1)
         self.notesToDisplayGridLayout = QtWidgets.QGridLayout()
         self.notesToDisplayGridLayout.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
         self.notesToDisplayGridLayout.setObjectName("notesToDisplayGridLayout")
         self.trebleCheckBox = QtWidgets.QCheckBox(self.centralwidget)
+        self.trebleCheckBox.setChecked(True)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.trebleCheckBox.setFont(font)
@@ -437,11 +606,11 @@ class MainWindow(QMainWindow):
         self.statusbar.setObjectName("statusbar")
         self.setStatusBar(self.statusbar)
 
-        self.retranslateUi()
+        self.retranslateStartUi()
         QtCore.QMetaObject.connectSlotsByName(self)
         self.show()
 
-    def retranslateUi(self):
+    def retranslateStartUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.startButton.setText(_translate("MainWindow", "Start"))

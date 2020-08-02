@@ -77,7 +77,11 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QSpinBox" name="minutesSpinBox"/>
+           <widget class="QSpinBox" name="minutesSpinBox">
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::UpDownArrows</enum>
+            </property>
+           </widget>
           </item>
           <item row="1" column="2">
            <widget class="QCheckBox" name="unlimitedTimeCheckBox">
@@ -214,7 +218,11 @@
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QComboBox" name="lowestNoteBassComboBox"/>
+           <widget class="QComboBox" name="lowestNoteBassComboBox">
+            <property name="cursor">
+             <cursorShape>ArrowCursor</cursorShape>
+            </property>
+           </widget>
           </item>
           <item row="2" column="1">
            <widget class="QComboBox" name="highestNoteBassComboBox"/>
