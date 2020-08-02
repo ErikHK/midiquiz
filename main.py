@@ -17,6 +17,8 @@ from PyQt5.QtCore import (QCoreApplication, QObject, QRunnable, QThread,
 import time
 import sys
 
+import statistics
+
 pygame.init()
 
 pygame.fastevent.init()
@@ -168,10 +170,16 @@ class MainWindow(QMainWindow):
 
         self.gameStarted = False
         self.time = 0.0
+        self.time2 = 0.0
         self.numberOfNotes = 0
         self.timeForLastNote = -1
         self.accuracy = -1
+        self.averageTimePerNoteList = []
+        self.averageTimePerNote = 0
 
+
+
+        self.lasttime = 0
         self.score = 0
 
 
@@ -195,11 +203,21 @@ class MainWindow(QMainWindow):
             global keycode
             keycode = midi_events[0][0][1]
             down = midi_events[0][0][2]
+            print(down)
 
             if keycode >= 36 and keycode <= 96:
                 if down:
+
                     self.numberOfNotes += 1
+
                     if keycode == randomkey:
+                        self.lasttime = self.time2 - self.lasttime
+                        self.timeForLastNote = f"{self.lasttime:.2f} s"
+                        self.averageTimePerNoteList.append(self.lasttime)
+
+                        self.lasttime = 0
+                        self.time2 = 0
+
                         self.midiPollingTimer.stop()
                         self.repaint()
                         self.score += 1
@@ -212,19 +230,28 @@ class MainWindow(QMainWindow):
                         self.repaint()
                         time.sleep(.5)
                         self.midiPollingTimer.start()
+                    self.accuracy = 100 * self.score / float(self.numberOfNotes)
 
 
     def increaseTime(self):
         self.time += .1
-
+        self.time2 += .1
+        print(self.time)
         self.totalTimeLabel.setText(str(datetime.timedelta(seconds=int(self.time))))
         if self.accuracy != -1:
-            self.accuracyLabel.setText(str(self.accuracy))
+            self.accuracyLabel.setText(f"{self.accuracy:.2f}" + " %")
         if self.timeForLastNote != -1:
             self.timeForLastNoteLabel.setText(str(self.timeForLastNote))
         self.numberOfNotesLabel.setText(str(self.numberOfNotes))
 
         self.scoreLabel.setText(str(self.score))
+
+        if len(self.averageTimePerNoteList) > 0:
+            self.averageTimePerNote = statistics.mean(self.averageTimePerNoteList)
+
+        self.averageTimePerNoteLabel.setText(f"{self.averageTimePerNote : .2f} s")
+
+
 
 
     def startGame(self):
