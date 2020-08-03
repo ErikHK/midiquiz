@@ -19,11 +19,22 @@ import sys
 
 import statistics
 
+#import fluidsynth
+
+#fs = fluidsynth.Synth()
+
+#fs.start(driver = 'dsound')  # use DirectSound driver
+
+#sfid = fs.sfload(r'FluidR3_GM.sf2')
+#fs.program_select(0, sfid, 0, 0)
+
+#fs.noteon(0, 60, 30)
+
 pygame.init()
 
-pygame.fastevent.init()
-event_get = pygame.fastevent.get
-event_post = pygame.fastevent.post
+#pygame.fastevent.init()
+#event_get = pygame.fastevent.get
+#event_post = pygame.fastevent.post
 
 pygame.midi.init()
 input_id = pygame.midi.get_default_input_id()
@@ -68,19 +79,29 @@ generateNewRandomKey()
 
 class ClefWidget(QtWidgets.QWidget):
 
-    def __init__(self):
+    def __init__(self, gClef=True):
         super().__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
 
         self.width = 500
-        self.height = 200
+        self.height = 180
         self.drawGreen = False
         self.drawRed = False
 
         self.setMinimumSize(self.width, self.height)
 
-        self.gClef = QtGui.QIcon("G-clef.svg")
-        self.gClefPixmap = self.gClef.pixmap(QSize(94, 160))
+        self.gClef = gClef
+        if self.gClef:
+            self.clef = QtGui.QIcon("G-clef.svg")
+            self.clefPixmap = self.clef.pixmap(QSize(94, 160))
+            self.offsx = 0
+            self.offsy = 22
+        else:
+            self.clef = QtGui.QIcon("F-clef.svg")
+            self.clefPixmap = self.clef.pixmap(QSize(61, 104))
+            self.offsx = 20
+            self.offsy = 57
+
 
         self.wholeNote = QtGui.QIcon("Whole-note.svg")
         self.wholeNotePixmap = self.wholeNote.pixmap(QSize(32, 17))
@@ -92,7 +113,7 @@ class ClefWidget(QtWidgets.QWidget):
         self.wholeNoteRedPixmap = self.wholeNoteRed.pixmap(QSize(32, 17))
 
     def drawNoteAt(self, painter, x, staffy):
-        y = (14 - staffy) * 10 + 50
+        y = int((14 - staffy) * 10 + 50)
         # painter.rotate(-10)
         # painter.drawEllipse(x, staffy*20+50 + (x/2) * math.sin(19 * math.pi / 180.0), 21, 16)
         #painter.drawEllipse(x, y, 20, 16)
@@ -133,7 +154,9 @@ class ClefWidget(QtWidgets.QWidget):
 
         painter.setPen(QPen(Qt.black, 2, Qt.SolidLine))
 
-        painter.drawPixmap(QRect(0,22, self.gClefPixmap.width(), self.gClefPixmap.height()), self.gClefPixmap)
+
+        painter.drawPixmap(QRect(self.offsx,self.offsy, self.clefPixmap.width(), self.clefPixmap.height()), self.clefPixmap)
+
         #print("keycode:", keycode)
 
 
@@ -164,7 +187,7 @@ class ClefWidget(QtWidgets.QWidget):
         #    painter.setBrush(QBrush(Qt.black, Qt.SolidPattern))
 
 
-        self.drawNoteAt(painter, self.width/2, randomkeyindex)
+        self.drawNoteAt(painter, int(self.width/2), randomkeyindex)
 
 
 class MainWindow(QMainWindow):
@@ -347,7 +370,11 @@ class MainWindow(QMainWindow):
         self.clefWidgetGridLayout = QtWidgets.QGridLayout()
         self.clefWidgetGridLayout.setObjectName("clefWidgetGridLayout")
 
+        #clefWidget2 = ClefWidget(gClef=False)
+
         self.clefWidgetGridLayout.addWidget(self.clefWidget, 0, 0, 1, 1)
+
+        #self.clefWidgetGridLayout.addWidget(clefWidget2, 1, 0, 1, 1)
         self.verticalLayout.addLayout(self.clefWidgetGridLayout)
 
 
@@ -478,8 +505,8 @@ class MainWindow(QMainWindow):
         self.title = "MidiQuiz"
         self.setObjectName("MainWindow")
 
-        self.gClef = QtGui.QIcon("G-clef.svg")
-        self.gClefPixmap = self.gClef.pixmap(QSize(94, 160))
+        #self.gClef = QtGui.QIcon("G-clef.svg")
+        #self.gClefPixmap = self.gClef.pixmap(QSize(94, 160))
 
         self.setWindowIcon(QtGui.QIcon("G-clef.svg"))
         self.setWindowTitle(self.title)
@@ -604,6 +631,7 @@ class MainWindow(QMainWindow):
         self.trebleGridLayout.addWidget(self.trebleCheckBox, 0, 0, 1, 2)
         self.minTrebleNotesComboBox = QtWidgets.QComboBox(self.centralwidget)
         self.minTrebleNotesComboBox.addItems([str(i) for i in range(5)])
+        self.minTrebleNotesComboBox.setCurrentIndex(1)
         self.minTrebleNotesComboBox.setObjectName("minTrebleNotesComboBox")
         self.trebleGridLayout.addWidget(self.minTrebleNotesComboBox, 2, 0, 1, 1)
         self.gridLayout_6.addLayout(self.trebleGridLayout, 0, 2, 1, 1)
@@ -742,6 +770,7 @@ class MainWindow(QMainWindow):
         font.setPointSize(12)
         self.timeRadioButton.setFont(font)
         self.timeRadioButton.setObjectName("timeRadioButton")
+        self.timeRadioButton.setChecked(True)
         self.timeGridLayout.addWidget(self.timeRadioButton, 0, 0, 1, 3)
         self.gridLayout_6.addLayout(self.timeGridLayout, 2, 2, 1, 1)
         self.notesToDisplayGridLayout = QtWidgets.QGridLayout()
