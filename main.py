@@ -53,6 +53,7 @@ allFClefKeys = [33, 35, 36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 
 
 fullNotenamesF = ["A1", "B2", "C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4"]
 fullNotenamesG = ["F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "E6"]
+noteNamesG = ["F", "G", "A", "B", "C", "D", "E", "F", "G", "A", "B", "C", "D", "E", "F", "G", "A", "B", "C", "D", "E"]
 
 randomkeyindex = 3
 
@@ -64,7 +65,10 @@ def generateNewRandomKey():
     global keycode
     global randomkeyindex
 
-    randomkeyindex = random.randint(3, len(allGClefKeys) - 1 - 3)
+    #clear list with current note names
+    currNoteNames = []
+
+    randomkeyindex = random.randint(3, len(allGClefKeys) - 1 - 5)
     #randomkeyindex = 4
 
     randomkey = allGClefKeys[randomkeyindex]
@@ -72,19 +76,24 @@ def generateNewRandomKey():
     currNoteNames.append(fullNotenamesG[randomkeyindex])
 
 def noteInNoteList(note, list):
+    print("noteinnotelist", list)
     res = [i for i in list if note in i]
+    print("efter?")
     return len(res) > 0
 
 
 generateNewRandomKey()
 
 class SheetLogic:
-    def __init__(self, gClef = True):
+    def __init__(self):
         self.notes = []
-        self.generateRandomNotes()
-        self.gClef = gClef
+        #self.generateRandomNotes()
 
-        self.clefWidget = ClefWidget(gClef)
+        self.gClefNotes = []
+        self.gClefNotesRemoved = []
+        self.fClefNotes = []
+
+        self.gClefNotesNamed = []
 
         self.allGClefKeyCodes = [53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84, 85, 86]
         self.allFClefKeyCodes = [33, 35, 36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67]
@@ -93,16 +102,38 @@ class SheetLogic:
         self.fullNotenamesG = ["F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5",
                           "G5", "A5", "B5", "C6", "D6", "E6"]
 
-    def generateRandomNotes(self):
-        self.notes = []
+
+    def generateRandomNotes(self, minBassNote, maxBassNote, minTrebleNote, maxTrebleNote,
+                            lowestBassNote, highestBassNote, lowestTrebleNote, highestTrebleNote):
+
+
+        self.numberOfBassNotes = random.randint(minBassNote, maxBassNote)
+        self.numberOfTrebleNotes = random.randint(minTrebleNote, maxTrebleNote)
+        self.gClefNotes = []
+        self.gClefNotesRemoved = []
+        self.fClefNotes = []
+
+        self.gClefNotesNamed = []
+        print("numberoftreble", self.numberOfTrebleNotes, minTrebleNote, maxTrebleNote)
+
+        for n in range(self.numberOfBassNotes):
+            ind = random.randint(lowestBassNote, highestBassNote)
+            self.fClefNotes.append(self.allFClefKeyCodes[ind])
+
+        for n in range(self.numberOfTrebleNotes):
+            ind = random.randint(lowestTrebleNote, highestTrebleNote)
+            self.gClefNotes.append(self.allGClefKeyCodes[ind])
+            self.gClefNotesNamed.append(noteNamesG[ind])
+            #print("gclefs", self.gClefNotes)
+
+        #print(self.fClefNotes, self.gClefNotes)
         #for n in range(self.numberOfNotes):
         #    self.notes.append(random.randint(self.lowNote, self.highNote))
 
 
-
 class ClefWidget(QtWidgets.QWidget):
 
-    def __init__(self, gClef=True):
+    def __init__(self, clefNotes, gClef = True):
         super().__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
 
@@ -112,6 +143,9 @@ class ClefWidget(QtWidgets.QWidget):
         self.drawRed = False
 
         self.setMinimumSize(self.width, self.height)
+
+        self.clefNotes = clefNotes
+        self.clefNotesRemoved = []
 
         self.gClef = gClef
         if self.gClef:
@@ -134,6 +168,22 @@ class ClefWidget(QtWidgets.QWidget):
 
         self.wholeNoteRed = QtGui.QIcon("Whole-note-red.svg")
         self.wholeNoteRedPixmap = self.wholeNoteRed.pixmap(QSize(32, 17))
+
+    def updateNotes(self, clefNotes, clefNotesRemoved):
+        self.clefNotes = clefNotes
+        self.clefNotesRemoved = clefNotesRemoved
+        print(self.clefNotesRemoved)
+
+    def drawNotes(self, painter):
+        for n in range(len(self.clefNotes)):
+            x = n*60 + self.width/2 - 150
+            ind = allGClefKeys.index(self.clefNotes[n])
+            #print("indddd", ind, self.clefNotes[n])
+            y = int((14-ind) * 10 + 50)
+
+            if n not in self.clefNotesRemoved:
+                painter.drawPixmap(QRect(x, y, self.wholeNotePixmap.width(), self.wholeNotePixmap.height()),
+                               self.wholeNotePixmap)
 
     def drawNoteAt(self, painter, x, staffy):
         y = int((14 - staffy) * 10 + 50)
@@ -170,47 +220,23 @@ class ClefWidget(QtWidgets.QWidget):
 
     def paintEvent(self, e):
         painter = QPainter(self)
-
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setRenderHint(QPainter.HighQualityAntialiasing)
-
-
         painter.setPen(QPen(Qt.black, 2, Qt.SolidLine))
 
-
         painter.drawPixmap(QRect(self.offsx,self.offsy, self.clefPixmap.width(), self.clefPixmap.height()), self.clefPixmap)
-
-        #print("keycode:", keycode)
-
-
         painter.setBrush(QBrush(Qt.black, Qt.SolidPattern))
 
         #draw staff
         for y in range(5):
             painter.drawLine(0, 10+20*y+48, self.width, 10+20*y+48)
 
-
-        #if self.drawRed:
-        #    painter.setPen(QPen(Qt.red, 2, Qt.SolidLine))
-        #    painter.setBrush(QBrush(Qt.red, Qt.SolidPattern))
-
-        #if self.drawGreen:
-        #    painter.setPen(QPen(Qt.green, 2, Qt.SolidLine))
-        #    painter.setBrush(QBrush(Qt.green, Qt.SolidPattern))
-
-        #global keycode
-        #global randomkey
-        #if keycode == randomkey:
-        #    painter.setPen(QPen(Qt.green, 2, Qt.SolidLine))
-        #    painter.setBrush(QBrush(Qt.green, Qt.SolidPattern))
-            #generateNewRandomKey()
-
-        #else:
-        #    painter.setPen(QPen(Qt.black, 2, Qt.SolidLine))
-        #    painter.setBrush(QBrush(Qt.black, Qt.SolidPattern))
-
-
-        self.drawNoteAt(painter, int(self.width/2), randomkeyindex)
+        #print("notes:", self.clefNotes)
+        #draw notes
+        #for n in range(len(self.clefNotes)):
+        #    self.drawNoteAt(painter, (n*50) + int(self.width/2) - 150, randomkeyindex)
+        self.drawNotes(painter)
+        #self.drawNoteAt(painter, int(self.width / 2), randomkeyindex)
 
 
 class MainWindow(QMainWindow):
@@ -218,10 +244,11 @@ class MainWindow(QMainWindow):
     def testtest(self):
         pass
 
-    def __init__(self, clefWidget):
+    def __init__(self):
         super().__init__()
 
-        self.clefWidget = clefWidget
+        self.gClefWidget = None
+        self.fClefWidget = None
 
         self.gameStarted = False
         self.time = 0.0
@@ -235,35 +262,31 @@ class MainWindow(QMainWindow):
         self.lasttime = 0
         self.score = 0
 
-
         self.sheetLogic = SheetLogic()
 
         ###set start values###
-        #no bass notes
+        # no bass notes
         self.playBass = False
         self.minBassNote = 0
         self.maxBassNote = 0
 
-        #just one treble note at a time
+        # just one treble note at a time
         self.playTreble = True
         self.minTrebleNote = 1
         self.maxTrebleNote = 1
 
         self.playOnTime = True
-        self.playTime = 10 #minutes
+        self.playTime = 10  # minutes
         self.unlimitedPlayTime = False
 
         self.totalNumberOfNotes = 100
         self.unlimitedNumberOfNotes = False
 
         self.lowestBassNote = 0
-        self.highestBassNote = len(self.sheetLogic.fullNotenamesF)-1
+        self.highestBassNote = len(self.sheetLogic.fullNotenamesF) - 1
 
         self.lowestTrebleNote = 0
-        self.highestTrebleNote = len(self.sheetLogic.fullNotenamesG)-1
-
-        self.sheetLogic = SheetLogic()
-
+        self.highestTrebleNote = len(self.sheetLogic.fullNotenamesG) - 1
 
         self.setupStartUi()
 
@@ -277,30 +300,64 @@ class MainWindow(QMainWindow):
             self.midiPollingTimer = QTimer(self, timeout=self.keyboardPolling, interval=100)
 
     def keyPressEvent(self, event):
-        global currNoteNames
+
         key = event.key()
         print(key, QtCore.Qt.Key_C)
-        if key == QtCore.Qt.Key_C and noteInNoteList("C", currNoteNames):
-            self.handleCorrectNotePressed()
-        elif key == QtCore.Qt.Key_D and noteInNoteList("D", currNoteNames):
-            self.handleCorrectNotePressed()
-        elif key == QtCore.Qt.Key_E and noteInNoteList("E", currNoteNames):
-            self.handleCorrectNotePressed()
-        elif key == QtCore.Qt.Key_F and noteInNoteList("F", currNoteNames):
-            self.handleCorrectNotePressed()
-        elif key == QtCore.Qt.Key_G and noteInNoteList("G", currNoteNames):
-            self.handleCorrectNotePressed()
-        elif key == QtCore.Qt.Key_A and noteInNoteList("A", currNoteNames):
-            self.handleCorrectNotePressed()
-        elif key == QtCore.Qt.Key_B and noteInNoteList("B", currNoteNames):
-            self.handleCorrectNotePressed()
+        if key == QtCore.Qt.Key_C and "C" in self.sheetLogic.gClefNotesNamed:
+            ind = self.sheetLogic.gClefNotesNamed.index("C")
+            self.sheetLogic.gClefNotesRemoved.append(ind)
+            #self.sheetLogic.gClefNotesNamed.remove("C")
+            #self.sheetLogic.gClefNotes.pop(ind)
+            #self.handleCorrectNotePressed()
+        elif key == QtCore.Qt.Key_D and "D" in self.sheetLogic.gClefNotesNamed:
+            ind = self.sheetLogic.gClefNotesNamed.index("D")
+            self.sheetLogic.gClefNotesRemoved.append(ind)
+            #self.sheetLogic.gClefNotesNamed.remove("D")
+            #self.sheetLogic.gClefNotes.pop(ind)
+            #self.handleCorrectNotePressed()
+        elif key == QtCore.Qt.Key_E and "E" in self.sheetLogic.gClefNotesNamed:
+            ind = self.sheetLogic.gClefNotesNamed.index("E")
+            self.sheetLogic.gClefNotesRemoved.append(ind)
+            #self.sheetLogic.gClefNotesNamed.remove("E")
+            #self.sheetLogic.gClefNotes.pop(ind)
+            #self.handleCorrectNotePressed()
+        elif key == QtCore.Qt.Key_F and "F" in self.sheetLogic.gClefNotesNamed:
+            ind = self.sheetLogic.gClefNotesNamed.index("F")
+            self.sheetLogic.gClefNotesRemoved.append(ind)
+            #self.sheetLogic.gClefNotesNamed.remove("F")
+            #self.sheetLogic.gClefNotes.pop(ind)
+            #self.handleCorrectNotePressed()
+        elif key == QtCore.Qt.Key_G and "G" in self.sheetLogic.gClefNotesNamed:
+            ind = self.sheetLogic.gClefNotesNamed.index("G")
+            self.sheetLogic.gClefNotesRemoved.append(ind)
+            #self.sheetLogic.gClefNotesNamed.remove("G")
+            #self.sheetLogic.gClefNotes.pop(ind)
+            #self.handleCorrectNotePressed()
+        elif key == QtCore.Qt.Key_A and "A" in self.sheetLogic.gClefNotesNamed:
+            ind = self.sheetLogic.gClefNotesNamed.index("A")
+            self.sheetLogic.gClefNotesRemoved.append(ind)
+            #self.sheetLogic.gClefNotesNamed.remove("A")
+            #self.sheetLogic.gClefNotes.pop(ind)
+            #self.handleCorrectNotePressed()
+        elif key == QtCore.Qt.Key_B and "B" in self.sheetLogic.gClefNotesNamed:
+            ind = self.sheetLogic.gClefNotesNamed.index("B")
+            self.sheetLogic.gClefNotesRemoved.append(ind)
+            #self.sheetLogic.gClefNotesNamed.remove("B")
+            #self.sheetLogic.gClefNotes.pop(ind)
+            #self.handleCorrectNotePressed()
         else:
             self.handleIncorrectNotePressed()
+
+        self.gClefWidget.updateNotes(self.sheetLogic.gClefNotes, self.sheetLogic.gClefNotesRemoved)
+        #is the list now empty?
+        if len(self.sheetLogic.gClefNotesRemoved)==len(self.sheetLogic.gClefNotes):
+            self.handleCorrectNotePressed()
+
         self.numberOfNotes += 1
         self.accuracy = 100 * self.score / float(self.numberOfNotes)
 
     def handleCorrectNotePressed(self):
-        self.clefWidget.drawGreen = True
+        self.gClefWidget.drawGreen = True
 
         self.lasttime = self.time2 - self.lasttime
         self.timeForLastNote = f"{self.lasttime:.1f} s"
@@ -314,16 +371,26 @@ class MainWindow(QMainWindow):
         self.score += 1
         time.sleep(.5)
 
-        generateNewRandomKey()
-        self.clefWidget.drawGreen = False
+        self.sheetLogic.generateRandomNotes(self.minBassNote, self.maxBassNote, self.minTrebleNote, self.maxTrebleNote,
+                                            self.lowestBassNote, self.highestBassNote,
+                                            self.lowestTrebleNote, self.highestTrebleNote)
+
+        if self.gClefWidget is not None:
+            #print("updating!!", self.sheetLogic.gClefNotes)
+            self.gClefWidget.updateNotes(self.sheetLogic.gClefNotes, self.sheetLogic.gClefNotesRemoved)
+        if self.fClefWidget is not None:
+            self.fClefWidget.updateNotes(self.sheetLogic.fClefNotes)
+
+        #generateNewRandomKey()
+        self.gClefWidget.drawGreen = False
         self.midiPollingTimer.start()
 
     def handleIncorrectNotePressed(self):
-        self.clefWidget.drawRed = True
+        self.gClefWidget.drawRed = True
         self.midiPollingTimer.stop()
         self.repaint()
         time.sleep(.5)
-        self.clefWidget.drawRed = False
+        self.gClefWidget.drawRed = False
         self.midiPollingTimer.start()
 
     def keyboardPolling(self):
@@ -345,8 +412,9 @@ class MainWindow(QMainWindow):
 
                     self.numberOfNotes += 1
 
-                    if keycode == randomkey:
-                        self.clefWidget.drawGreen = True
+                    #if keycode == randomkey:
+                    if keycode in self.sheetLogic.gClefNotes:
+                        self.gClefWidget.drawGreen = True
 
                         self.lasttime = self.time2 - self.lasttime
                         self.timeForLastNote = f"{self.lasttime:.1f} s"
@@ -361,14 +429,20 @@ class MainWindow(QMainWindow):
                         time.sleep(.5)
 
                         generateNewRandomKey()
-                        self.clefWidget.drawGreen = False
+                        #generate new random notes according to rules set in beginning by user in UI
+                        self.sheetLogic.generateRandomNotes(self.minBassNote, self.maxBassNote, self.minTrebleNote,
+                                                            self.maxTrebleNote,
+                                                            self.lowestBassNote, self.highestBassNote,
+                                                            self.lowestTrebleNote, self.highestTrebleNote)
+
+                        self.gClefWidget.drawGreen = False
                         self.midiPollingTimer.start()
                     else:
-                        self.clefWidget.drawRed = True
+                        self.gClefWidget.drawRed = True
                         self.midiPollingTimer.stop()
                         self.repaint()
                         time.sleep(.5)
-                        self.clefWidget.drawRed = False
+                        self.gClefWidget.drawRed = False
                         self.midiPollingTimer.start()
                     self.accuracy = 100 * self.score / float(self.numberOfNotes)
 
@@ -377,14 +451,23 @@ class MainWindow(QMainWindow):
         self.time += .1
         self.time2 += .1
         #print(self.time)
-        self.totalTimeLabel.setText(str(datetime.timedelta(seconds=int(self.time))))
+
+        timestr = str(datetime.timedelta(seconds=int(self.time)))
+        if self.playOnTime:
+            timestr += " / " + str(datetime.timedelta(minutes=self.playTime))
+        self.totalTimeLabel.setText(timestr)
         if self.accuracy != -1:
             self.accuracyLabel.setText(f"{self.accuracy:.1f}" + " %")
         if self.timeForLastNote != -1:
             self.timeForLastNoteLabel.setText(str(self.timeForLastNote))
         self.numberOfNotesLabel.setText(str(self.numberOfNotes))
 
-        self.scoreLabel.setText(str(self.score))
+        scorestr = str(self.score)
+        if not self.playOnTime:
+            scorestr += " / " + str(self.totalNumberOfNotes)
+        self.scoreLabel.setText(scorestr)
+
+
 
         if len(self.averageTimePerNoteList) > 0:
             self.averageTimePerNote = statistics.mean(self.averageTimePerNoteList)
@@ -392,16 +475,14 @@ class MainWindow(QMainWindow):
         self.averageTimePerNoteLabel.setText(f"{self.averageTimePerNote : .2f} s")
 
 
-    def startGame(self):
-        ###gather info from start GUI##
-
+    def updateValues(self):
         self.playBass = self.bassCheckBox.isChecked()
         self.minBassNote = self.minBassNotesComboBox.currentIndex()
         self.maxBassNote = self.maxBassNotesComboBox.currentIndex()
 
         self.playTreble = self.trebleCheckBox.isChecked()
         self.minTrebleNote = self.minTrebleNotesComboBox.currentIndex()
-        self.maxTrebleNote = self.minTrebleNotesComboBox.currentIndex()
+        self.maxTrebleNote = self.maxTrebleNotesComboBox.currentIndex()
 
         self.playOnTime = self.timeRadioButton.isChecked()
         self.playTime = self.timeSpinBox.value()  # minutes
@@ -416,12 +497,34 @@ class MainWindow(QMainWindow):
         self.lowestTrebleNote = self.lowestTrebleNoteComboBox.currentIndex()
         self.highestTrebleNote = self.highestTrebleNoteComboBox.currentIndex()
 
+
+    def startGame(self):
+        ###gather info from start GUI##
+
+
+        self.updateValues()
+        print("checka haer da:", self.minTrebleNote, self.maxTrebleNote)
+
+        #generate random note lists dependent of the choices the user made!
+        self.sheetLogic.generateRandomNotes(self.minBassNote, self.maxBassNote, self.minTrebleNote, self.maxTrebleNote,
+                                            self.lowestBassNote, self.highestBassNote,
+                                            self.lowestTrebleNote, self.highestTrebleNote)
+
+        #if treble is checked, create Widget
+        if self.playTreble:
+            self.gClefWidget = ClefWidget(self.sheetLogic.gClefNotes, True)
+
+        #if bass is checked, create Widget
+        if self.playBass:
+            self.fClefWidget = ClefWidget(self.sheetLogic.fClefNotes, False)
+
         self.setupGameUi()
         timer = QTimer(self, timeout=self.increaseTime, interval=100)
         timer.start()
         self.midiPollingTimer.start()
     def quitGame(self):
-        self.quit()
+        #self.quit()
+        self.close()
         pass
 
     def setupGameUi(self):
@@ -443,16 +546,17 @@ class MainWindow(QMainWindow):
         self.verticalLayout.setObjectName("verticalLayout")
 
         #self.clefWidget = ClefWidget()#QtWidgets.QOpenGLWidget(self.centralwidget)
-        self.clefWidget.setObjectName("clefWidget")
+        self.gClefWidget.setObjectName("clefWidget")
 
         self.clefWidgetGridLayout = QtWidgets.QGridLayout()
         self.clefWidgetGridLayout.setObjectName("clefWidgetGridLayout")
 
         #clefWidget2 = ClefWidget(gClef=False)
 
-        self.clefWidgetGridLayout.addWidget(self.clefWidget, 0, 0, 1, 1)
-
-        #self.clefWidgetGridLayout.addWidget(clefWidget2, 1, 0, 1, 1)
+        if self.playTreble:
+            self.clefWidgetGridLayout.addWidget(self.gClefWidget, 0, 0, 1, 1)
+        if self.playBass:
+            self.clefWidgetGridLayout.addWidget(self.fClefWidget, 1, 0, 1, 1)
         self.verticalLayout.addLayout(self.clefWidgetGridLayout)
 
 
@@ -938,6 +1042,6 @@ class MainWindow(QMainWindow):
 
 
 App = QApplication(sys.argv)
-clefWidget = ClefWidget()
-window = MainWindow(clefWidget)
+#clefWidget = ClefWidget()
+window = MainWindow()
 sys.exit(App.exec())
