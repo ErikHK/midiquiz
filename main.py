@@ -46,36 +46,59 @@ try:
 except:
     midiInputExists = False
 
-
 keycode = 0
 
-allgclefkeys = [53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84]
-notename = ["F", "G", "A", "B", "C", "D", "E", "F", "G", "A", "B", "C", "D", "E", "F", "G", "A", "B", "C"]
+allGClefKeys = [53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84, 85, 86]
+allFClefKeys = [33, 35, 36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67]
 
-fullnotenamesf = ["A1", "B2", "C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4"]
-fullnotenamesg = ["F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6"]
-
+fullNotenamesF = ["A1", "B2", "C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4"]
+fullNotenamesG = ["F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6", "E6"]
 
 randomkeyindex = 3
 
-currNoteName = ''
+currNoteNames = []
 
 def generateNewRandomKey():
     global randomkey
-    global currNoteName
+    global currNoteNames
     global keycode
     global randomkeyindex
-    global currNoteName
-    randomkeyindex = random.randint(3, len(allgclefkeys) - 1 - 3)
+
+    randomkeyindex = random.randint(3, len(allGClefKeys) - 1 - 3)
     #randomkeyindex = 4
 
-    randomkey = allgclefkeys[randomkeyindex]
+    randomkey = allGClefKeys[randomkeyindex]
     #print(randomkey, notename[randomkeyindex])
-    currNoteName = notename[randomkeyindex]
+    currNoteNames.append(fullNotenamesG[randomkeyindex])
 
+def noteInNoteList(note, list):
+    res = [i for i in list if note in i]
+    return len(res) > 0
 
 
 generateNewRandomKey()
+
+class SheetLogic:
+    def __init__(self, gClef = True):
+        self.notes = []
+        self.generateRandomNotes()
+        self.gClef = gClef
+
+        self.clefWidget = ClefWidget(gClef)
+
+        self.allGClefKeyCodes = [53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84, 85, 86]
+        self.allFClefKeyCodes = [33, 35, 36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67]
+
+        self.fullNotenamesF = ["A1", "B2", "C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4"]
+        self.fullNotenamesG = ["F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5",
+                          "G5", "A5", "B5", "C6", "D6", "E6"]
+
+    def generateRandomNotes(self):
+        self.notes = []
+        #for n in range(self.numberOfNotes):
+        #    self.notes.append(random.randint(self.lowNote, self.highNote))
+
+
 
 class ClefWidget(QtWidgets.QWidget):
 
@@ -212,6 +235,36 @@ class MainWindow(QMainWindow):
         self.lasttime = 0
         self.score = 0
 
+
+        self.sheetLogic = SheetLogic()
+
+        ###set start values###
+        #no bass notes
+        self.playBass = False
+        self.minBassNote = 0
+        self.maxBassNote = 0
+
+        #just one treble note at a time
+        self.playTreble = True
+        self.minTrebleNote = 1
+        self.maxTrebleNote = 1
+
+        self.playOnTime = True
+        self.playTime = 10 #minutes
+        self.unlimitedPlayTime = False
+
+        self.totalNumberOfNotes = 100
+        self.unlimitedNumberOfNotes = False
+
+        self.lowestBassNote = 0
+        self.highestBassNote = len(self.sheetLogic.fullNotenamesF)-1
+
+        self.lowestTrebleNote = 0
+        self.highestTrebleNote = len(self.sheetLogic.fullNotenamesG)-1
+
+        self.sheetLogic = SheetLogic()
+
+
         self.setupStartUi()
 
         #repaint UI
@@ -224,20 +277,22 @@ class MainWindow(QMainWindow):
             self.midiPollingTimer = QTimer(self, timeout=self.keyboardPolling, interval=100)
 
     def keyPressEvent(self, event):
+        global currNoteNames
         key = event.key()
-        if key == QtCore.Qt.Key_C and currNoteName == "C":
+        print(key, QtCore.Qt.Key_C)
+        if key == QtCore.Qt.Key_C and noteInNoteList("C", currNoteNames):
             self.handleCorrectNotePressed()
-        elif key == QtCore.Qt.Key_D and currNoteName == "D":
+        elif key == QtCore.Qt.Key_D and noteInNoteList("D", currNoteNames):
             self.handleCorrectNotePressed()
-        elif key == QtCore.Qt.Key_E and currNoteName == "E":
+        elif key == QtCore.Qt.Key_E and noteInNoteList("E", currNoteNames):
             self.handleCorrectNotePressed()
-        elif key == QtCore.Qt.Key_F and currNoteName == "F":
+        elif key == QtCore.Qt.Key_F and noteInNoteList("F", currNoteNames):
             self.handleCorrectNotePressed()
-        elif key == QtCore.Qt.Key_G and currNoteName == "G":
+        elif key == QtCore.Qt.Key_G and noteInNoteList("G", currNoteNames):
             self.handleCorrectNotePressed()
-        elif key == QtCore.Qt.Key_A and currNoteName == "A":
+        elif key == QtCore.Qt.Key_A and noteInNoteList("A", currNoteNames):
             self.handleCorrectNotePressed()
-        elif key == QtCore.Qt.Key_B and currNoteName == "B":
+        elif key == QtCore.Qt.Key_B and noteInNoteList("B", currNoteNames):
             self.handleCorrectNotePressed()
         else:
             self.handleIncorrectNotePressed()
@@ -338,6 +393,29 @@ class MainWindow(QMainWindow):
 
 
     def startGame(self):
+        ###gather info from start GUI##
+
+        self.playBass = self.bassCheckBox.isChecked()
+        self.minBassNote = self.minBassNotesComboBox.currentIndex()
+        self.maxBassNote = self.maxBassNotesComboBox.currentIndex()
+
+        self.playTreble = self.trebleCheckBox.isChecked()
+        self.minTrebleNote = self.minTrebleNotesComboBox.currentIndex()
+        self.maxTrebleNote = self.minTrebleNotesComboBox.currentIndex()
+
+        self.playOnTime = self.timeRadioButton.isChecked()
+        self.playTime = self.timeSpinBox.value()  # minutes
+        self.unlimitedPlayTime = self.timeUnlimitedCheckBox.isChecked()
+
+        self.totalNumberOfNotes = self.numberOfNotesSpinBox.value()
+        self.unlimitedNumberOfNotes = self.numberOfNotesUnlimitedCheckBox.isChecked()
+
+        self.lowestBassNote = self.lowestBassNoteComboBox.currentIndex()
+        self.highestBassNote = self.highestBassNoteComboBox.currentIndex()
+
+        self.lowestTrebleNote = self.lowestTrebleNoteComboBox.currentIndex()
+        self.highestTrebleNote = self.highestTrebleNoteComboBox.currentIndex()
+
         self.setupGameUi()
         timer = QTimer(self, timeout=self.increaseTime, interval=100)
         timer.start()
@@ -573,14 +651,18 @@ class MainWindow(QMainWindow):
         self.trebleLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.trebleLabel.setObjectName("trebleLabel")
         self.trebleGridLayout_2.addWidget(self.trebleLabel, 0, 0, 1, 2)
+
         self.highestTrebleNoteComboBox = QtWidgets.QComboBox(self.centralwidget)
-        self.highestTrebleNoteComboBox.addItems(fullnotenamesg)
-        self.highestTrebleNoteComboBox.setCurrentIndex(len(fullnotenamesg)-1)
+        self.highestTrebleNoteComboBox.addItems(self.sheetLogic.fullNotenamesG)
+        self.highestTrebleNoteComboBox.setCurrentIndex(self.highestTrebleNote)
+
         self.highestTrebleNoteComboBox.setObjectName("highestTrebleNoteComboBox")
         self.trebleGridLayout_2.addWidget(self.highestTrebleNoteComboBox, 2, 1, 1, 1)
+
         self.lowestTrebleNoteComboBox = QtWidgets.QComboBox(self.centralwidget)
-        self.lowestTrebleNoteComboBox.addItems(fullnotenamesg)
+        self.lowestTrebleNoteComboBox.addItems(self.sheetLogic.fullNotenamesG)
         self.lowestTrebleNoteComboBox.setObjectName("lowestTrebleNoteComboBox")
+
         self.trebleGridLayout_2.addWidget(self.lowestTrebleNoteComboBox, 2, 0, 1, 1)
         self.lowestTrebleNoteLabel = QtWidgets.QLabel(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
@@ -619,7 +701,7 @@ class MainWindow(QMainWindow):
         self.trebleGridLayout.addWidget(self.numberOfTrebleNotesToDisplayLabel, 1, 0, 1, 2)
         self.maxTrebleNotesComboBox = QtWidgets.QComboBox(self.centralwidget)
         self.maxTrebleNotesComboBox.addItems([str(i) for i in range(5)])
-        self.maxTrebleNotesComboBox.setCurrentIndex(1)
+        self.maxTrebleNotesComboBox.setCurrentIndex(self.maxTrebleNote)
         self.maxTrebleNotesComboBox.setObjectName("maxTrebleNotesComboBox")
         self.trebleGridLayout.addWidget(self.maxTrebleNotesComboBox, 2, 1, 1, 1)
         self.trebleCheckBox = QtWidgets.QCheckBox(self.centralwidget)
@@ -631,7 +713,7 @@ class MainWindow(QMainWindow):
         self.trebleGridLayout.addWidget(self.trebleCheckBox, 0, 0, 1, 2)
         self.minTrebleNotesComboBox = QtWidgets.QComboBox(self.centralwidget)
         self.minTrebleNotesComboBox.addItems([str(i) for i in range(5)])
-        self.minTrebleNotesComboBox.setCurrentIndex(1)
+        self.minTrebleNotesComboBox.setCurrentIndex(self.minTrebleNote)
         self.minTrebleNotesComboBox.setObjectName("minTrebleNotesComboBox")
         self.trebleGridLayout.addWidget(self.minTrebleNotesComboBox, 2, 0, 1, 1)
         self.gridLayout_6.addLayout(self.trebleGridLayout, 0, 2, 1, 1)
@@ -650,7 +732,7 @@ class MainWindow(QMainWindow):
         self.numberOfNotesGridLayout.setObjectName("numberOfNotesGridLayout")
         self.numberOfNotesSpinBox = QtWidgets.QSpinBox(self.centralwidget)
         self.numberOfNotesSpinBox.setMaximum(10000)
-        self.numberOfNotesSpinBox.setValue(100)
+        self.numberOfNotesSpinBox.setValue(self.totalNumberOfNotes)
         self.numberOfNotesSpinBox.setObjectName("numberOfNotesSpinBox")
         self.numberOfNotesGridLayout.addWidget(self.numberOfNotesSpinBox, 1, 0, 1, 1)
         self.notesLabel = QtWidgets.QLabel(self.centralwidget)
@@ -714,14 +796,16 @@ class MainWindow(QMainWindow):
         self.highestBassNoteLabel.setObjectName("highestBassNoteLabel")
         self.bassGridLayout_2.addWidget(self.highestBassNoteLabel, 1, 1, 1, 1)
         self.lowestBassNoteComboBox = QtWidgets.QComboBox(self.centralwidget)
-        self.lowestBassNoteComboBox.addItems(fullnotenamesf)
+        self.lowestBassNoteComboBox.addItems(fullNotenamesF)
 
         self.lowestBassNoteComboBox.setObjectName("lowestBassNoteComboBox")
         self.bassGridLayout_2.addWidget(self.lowestBassNoteComboBox, 2, 0, 1, 1)
+
         self.highestBassNoteComboBox = QtWidgets.QComboBox(self.centralwidget)
-        self.highestBassNoteComboBox.addItems(fullnotenamesf)
-        self.highestBassNoteComboBox.setCurrentIndex(len(fullnotenamesf)-1)
+        self.highestBassNoteComboBox.addItems(fullNotenamesF)
+        self.highestBassNoteComboBox.setCurrentIndex(self.highestBassNote)
         self.highestBassNoteComboBox.setObjectName("highestBassNoteComboBox")
+
         self.bassGridLayout_2.addWidget(self.highestBassNoteComboBox, 2, 1, 1, 1)
         self.gridLayout_6.addLayout(self.bassGridLayout_2, 4, 3, 1, 1)
         self.noteRangesLabelGridLayout = QtWidgets.QGridLayout()
@@ -754,7 +838,7 @@ class MainWindow(QMainWindow):
         self.minLabel.setObjectName("minLabel")
         self.timeGridLayout.addWidget(self.minLabel, 1, 1, 1, 1)
         self.timeSpinBox = QtWidgets.QSpinBox(self.centralwidget)
-        self.timeSpinBox.setValue(10)
+        self.timeSpinBox.setValue(self.playTime)
         self.timeSpinBox.setObjectName("timeSpinBox")
         self.timeGridLayout.addWidget(self.timeSpinBox, 1, 0, 1, 1)
         self.timeUnlimitedCheckBox = QtWidgets.QCheckBox(self.centralwidget)
@@ -770,7 +854,7 @@ class MainWindow(QMainWindow):
         font.setPointSize(12)
         self.timeRadioButton.setFont(font)
         self.timeRadioButton.setObjectName("timeRadioButton")
-        self.timeRadioButton.setChecked(True)
+        self.timeRadioButton.setChecked(self.playOnTime)
         self.timeGridLayout.addWidget(self.timeRadioButton, 0, 0, 1, 3)
         self.gridLayout_6.addLayout(self.timeGridLayout, 2, 2, 1, 1)
         self.notesToDisplayGridLayout = QtWidgets.QGridLayout()
