@@ -139,8 +139,8 @@ class ClefWidget(QtWidgets.QWidget):
 
         self.width = 500
         self.height = 180
-        self.drawGreen = False
-        self.drawRed = False
+        self.drawGreen = [False for i in range(len(clefNotes))]
+        self.drawRed = [False for i in range(len(clefNotes))]
 
         self.setMinimumSize(self.width, self.height)
 
@@ -182,8 +182,17 @@ class ClefWidget(QtWidgets.QWidget):
             y = int((14-ind) * 10 + 50)
 
             if n not in self.clefNotesRemoved:
-                painter.drawPixmap(QRect(x, y, self.wholeNotePixmap.width(), self.wholeNotePixmap.height()),
-                               self.wholeNotePixmap)
+                if self.drawGreen[n]:
+                    painter.drawPixmap(QRect(x, y, self.wholeNotePixmap.width(), self.wholeNotePixmap.height()),
+                                       self.wholeNoteGreenPixmap)
+                elif self.drawRed[n]:
+                    painter.drawPixmap(QRect(x, y, self.wholeNotePixmap.width(), self.wholeNotePixmap.height()),
+                                       self.wholeNoteRedPixmap)
+                else:
+
+            #if n not in self.clefNotesRemoved and not self.drawGreen and not self.drawRed:
+                    painter.drawPixmap(QRect(x, y, self.wholeNotePixmap.width(), self.wholeNotePixmap.height()),
+                                       self.wholeNotePixmap)
 
     def drawNoteAt(self, painter, x, staffy):
         y = int((14 - staffy) * 10 + 50)
@@ -304,60 +313,35 @@ class MainWindow(QMainWindow):
         key = event.key()
         print(key, QtCore.Qt.Key_C)
         if key == QtCore.Qt.Key_C and "C" in self.sheetLogic.gClefNotesNamed:
-            ind = self.sheetLogic.gClefNotesNamed.index("C")
-            self.sheetLogic.gClefNotesRemoved.append(ind)
-            #self.sheetLogic.gClefNotesNamed.remove("C")
-            #self.sheetLogic.gClefNotes.pop(ind)
-            #self.handleCorrectNotePressed()
+            self.handleCorrectNotePressed("C")
         elif key == QtCore.Qt.Key_D and "D" in self.sheetLogic.gClefNotesNamed:
-            ind = self.sheetLogic.gClefNotesNamed.index("D")
-            self.sheetLogic.gClefNotesRemoved.append(ind)
-            #self.sheetLogic.gClefNotesNamed.remove("D")
-            #self.sheetLogic.gClefNotes.pop(ind)
-            #self.handleCorrectNotePressed()
+            self.handleCorrectNotePressed("D")
         elif key == QtCore.Qt.Key_E and "E" in self.sheetLogic.gClefNotesNamed:
-            ind = self.sheetLogic.gClefNotesNamed.index("E")
-            self.sheetLogic.gClefNotesRemoved.append(ind)
-            #self.sheetLogic.gClefNotesNamed.remove("E")
-            #self.sheetLogic.gClefNotes.pop(ind)
-            #self.handleCorrectNotePressed()
+            self.handleCorrectNotePressed("E")
         elif key == QtCore.Qt.Key_F and "F" in self.sheetLogic.gClefNotesNamed:
-            ind = self.sheetLogic.gClefNotesNamed.index("F")
-            self.sheetLogic.gClefNotesRemoved.append(ind)
-            #self.sheetLogic.gClefNotesNamed.remove("F")
-            #self.sheetLogic.gClefNotes.pop(ind)
-            #self.handleCorrectNotePressed()
+            self.handleCorrectNotePressed("F")
         elif key == QtCore.Qt.Key_G and "G" in self.sheetLogic.gClefNotesNamed:
-            ind = self.sheetLogic.gClefNotesNamed.index("G")
-            self.sheetLogic.gClefNotesRemoved.append(ind)
-            #self.sheetLogic.gClefNotesNamed.remove("G")
-            #self.sheetLogic.gClefNotes.pop(ind)
-            #self.handleCorrectNotePressed()
+            self.handleCorrectNotePressed("G")
         elif key == QtCore.Qt.Key_A and "A" in self.sheetLogic.gClefNotesNamed:
-            ind = self.sheetLogic.gClefNotesNamed.index("A")
-            self.sheetLogic.gClefNotesRemoved.append(ind)
-            #self.sheetLogic.gClefNotesNamed.remove("A")
-            #self.sheetLogic.gClefNotes.pop(ind)
-            #self.handleCorrectNotePressed()
+            self.handleCorrectNotePressed("A")
         elif key == QtCore.Qt.Key_B and "B" in self.sheetLogic.gClefNotesNamed:
-            ind = self.sheetLogic.gClefNotesNamed.index("B")
-            self.sheetLogic.gClefNotesRemoved.append(ind)
-            #self.sheetLogic.gClefNotesNamed.remove("B")
-            #self.sheetLogic.gClefNotes.pop(ind)
-            #self.handleCorrectNotePressed()
+            self.handleCorrectNotePressed("B")
         else:
             self.handleIncorrectNotePressed()
 
         self.gClefWidget.updateNotes(self.sheetLogic.gClefNotes, self.sheetLogic.gClefNotesRemoved)
         #is the list now empty?
         if len(self.sheetLogic.gClefNotesRemoved)==len(self.sheetLogic.gClefNotes):
-            self.handleCorrectNotePressed()
+            self.generateNewSheet()
+            #self.handleCorrectNotePressed()
 
         self.numberOfNotes += 1
         self.accuracy = 100 * self.score / float(self.numberOfNotes)
 
-    def handleCorrectNotePressed(self):
-        self.gClefWidget.drawGreen = True
+    def handleCorrectNotePressed(self, note):
+        ind = self.sheetLogic.gClefNotesNamed.index(note)
+
+        self.gClefWidget.drawGreen[ind] = True
 
         self.lasttime = self.time2 - self.lasttime
         self.timeForLastNote = f"{self.lasttime:.1f} s"
@@ -370,7 +354,10 @@ class MainWindow(QMainWindow):
         self.repaint()
         self.score += 1
         time.sleep(.5)
+        self.gClefWidget.drawGreen[ind] = False
+        self.sheetLogic.gClefNotesRemoved.append(ind)
 
+    def generateNewSheet(self):
         self.sheetLogic.generateRandomNotes(self.minBassNote, self.maxBassNote, self.minTrebleNote, self.maxTrebleNote,
                                             self.lowestBassNote, self.highestBassNote,
                                             self.lowestTrebleNote, self.highestTrebleNote)
@@ -382,15 +369,15 @@ class MainWindow(QMainWindow):
             self.fClefWidget.updateNotes(self.sheetLogic.fClefNotes)
 
         #generateNewRandomKey()
-        self.gClefWidget.drawGreen = False
+        #self.gClefWidget.drawGreen = False
         self.midiPollingTimer.start()
 
     def handleIncorrectNotePressed(self):
-        self.gClefWidget.drawRed = True
+        #self.gClefWidget.drawRed = True
         self.midiPollingTimer.stop()
         self.repaint()
         time.sleep(.5)
-        self.gClefWidget.drawRed = False
+        #self.gClefWidget.drawRed = False
         self.midiPollingTimer.start()
 
     def keyboardPolling(self):
