@@ -124,6 +124,15 @@ class SheetLogic:
             ind = random.randint(lowestTrebleNote, highestTrebleNote)
             self.gClefNotes.append(self.allGClefKeyCodes[ind])
             self.gClefNotesNamed.append(noteNamesG[ind])
+
+        #self.gClefNotes.append(self.allGClefKeyCodes[17])
+        #self.gClefNotes.append(self.allGClefKeyCodes[18])
+        #self.gClefNotes.append(self.allGClefKeyCodes[19])
+        #self.gClefNotes.append(self.allGClefKeyCodes[20])
+        #self.gClefNotesNamed.append(noteNamesG[17])
+        #self.gClefNotesNamed.append(noteNamesG[18])
+        #self.gClefNotesNamed.append(noteNamesG[19])
+        #self.gClefNotesNamed.append(noteNamesG[20])
             #print("gclefs", self.gClefNotes)
 
         #print(self.fClefNotes, self.gClefNotes)
@@ -138,7 +147,7 @@ class ClefWidget(QtWidgets.QWidget):
         self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
 
         self.width = 500
-        self.height = 180
+        self.height = 230
         self.drawGreen = [False for i in range(len(clefNotes))]
         self.drawRed = [False for i in range(len(clefNotes))]
 
@@ -179,7 +188,7 @@ class ClefWidget(QtWidgets.QWidget):
             x = n*60 + self.width/2 - 150
             ind = allGClefKeys.index(self.clefNotes[n])
             #print("indddd", ind, self.clefNotes[n])
-            y = int((14-ind) * 10 + 50)
+            y = int((14-ind) * 10 + 70)
 
             if n not in self.clefNotesRemoved:
                 if self.drawGreen[n]:
@@ -189,10 +198,22 @@ class ClefWidget(QtWidgets.QWidget):
                     painter.drawPixmap(QRect(x, y, self.wholeNotePixmap.width(), self.wholeNotePixmap.height()),
                                        self.wholeNoteRedPixmap)
                 else:
-
-            #if n not in self.clefNotesRemoved and not self.drawGreen and not self.drawRed:
                     painter.drawPixmap(QRect(x, y, self.wholeNotePixmap.width(), self.wholeNotePixmap.height()),
                                        self.wholeNotePixmap)
+            #also draw "extra" staff lines on lower and higher notes
+            if ind < 7:
+                for i in range( int((6-ind) / 2)):
+                    if ind%2==0:
+                        painter.drawLine(x - 10, y-20*(i) + 10, x + 38, y-20*(i) + 10)
+                    else:
+                        painter.drawLine(x - 10, y - 20 * (i+1) + 20, x + 38, y - 20 * (i+1) + 20)
+            elif ind > 15:
+                for i in range( int((ind-14) / 2)):
+                    if ind%2 == 0:
+                        painter.drawLine(x - 10, y+20*(i) + 10, x + 38, y+20*(i) + 10)
+                    else:
+                        painter.drawLine(x - 10, y + 20 * (i) + 20, x + 38, y + 20 * (i) + 20)
+
 
     def drawNoteAt(self, painter, x, staffy):
         y = int((14 - staffy) * 10 + 50)
@@ -238,7 +259,7 @@ class ClefWidget(QtWidgets.QWidget):
 
         #draw staff
         for y in range(5):
-            painter.drawLine(0, 10+20*y+48, self.width, 10+20*y+48)
+            painter.drawLine(0, 10+20*y+48+20, self.width, 10+20*y+48+20)
 
         #print("notes:", self.clefNotes)
         #draw notes
@@ -262,7 +283,7 @@ class MainWindow(QMainWindow):
         self.gameStarted = False
         self.time = 0.0
         self.time2 = 0.0
-        self.numberOfNotes = 0
+        self.numberOfNotesPlayed = 0
         self.timeForLastNote = -1
         self.accuracy = -1
         self.averageTimePerNoteList = []
@@ -335,8 +356,8 @@ class MainWindow(QMainWindow):
             self.generateNewSheet()
             #self.handleCorrectNotePressed()
 
-        self.numberOfNotes += 1
-        self.accuracy = 100 * self.score / float(self.numberOfNotes)
+        self.numberOfNotesPlayed += 1
+        self.accuracy = 100 * self.score / float(self.numberOfNotesPlayed)
 
     def handleCorrectNotePressed(self, note):
         ind = self.sheetLogic.gClefNotesNamed.index(note)
@@ -397,7 +418,7 @@ class MainWindow(QMainWindow):
             if keycode >= 36 and keycode <= 96:
                 if down:
 
-                    self.numberOfNotes += 1
+                    self.numberOfNotesPlayed += 1
 
                     #if keycode == randomkey:
                     if keycode in self.sheetLogic.gClefNotes:
@@ -431,7 +452,7 @@ class MainWindow(QMainWindow):
                         time.sleep(.5)
                         self.gClefWidget.drawRed = False
                         self.midiPollingTimer.start()
-                    self.accuracy = 100 * self.score / float(self.numberOfNotes)
+                    self.accuracy = 100 * self.score / float(self.numberOfNotesPlayed)
 
 
     def increaseTime(self):
@@ -447,11 +468,11 @@ class MainWindow(QMainWindow):
             self.accuracyLabel.setText(f"{self.accuracy:.1f}" + " %")
         if self.timeForLastNote != -1:
             self.timeForLastNoteLabel.setText(str(self.timeForLastNote))
-        self.numberOfNotesLabel.setText(str(self.numberOfNotes))
+        self.numberOfNotesLabel.setText(str(self.numberOfNotesPlayed))
 
         scorestr = str(self.score)
         if not self.playOnTime:
-            scorestr += " / " + str(self.totalNumberOfNotes)
+            scorestr += " / " + str(self.totalnumberOfNotesPlayed)
         self.scoreLabel.setText(scorestr)
 
 
