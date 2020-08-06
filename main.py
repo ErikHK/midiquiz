@@ -95,7 +95,7 @@ class SheetLogic:
 
         self.gClefNotesNamed = []
 
-        self.allGClefKeyCodes = [53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84, 85, 86]
+        self.allGClefKeyCodes = [53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84, 86, 88]
         self.allFClefKeyCodes = [33, 35, 36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67]
 
         self.fullNotenamesF = ["A1", "B2", "C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4"]
@@ -351,10 +351,7 @@ class MainWindow(QMainWindow):
             self.handleIncorrectNotePressed()
 
         self.gClefWidget.updateNotes(self.sheetLogic.gClefNotes, self.sheetLogic.gClefNotesRemoved)
-        #is the list now empty?
-        if len(self.sheetLogic.gClefNotesRemoved)==len(self.sheetLogic.gClefNotes):
-            self.generateNewSheet()
-            #self.handleCorrectNotePressed()
+
 
         self.numberOfNotesPlayed += 1
         self.accuracy = 100 * self.score / float(self.numberOfNotesPlayed)
@@ -377,6 +374,11 @@ class MainWindow(QMainWindow):
         time.sleep(.5)
         self.gClefWidget.drawGreen[ind] = False
         self.sheetLogic.gClefNotesRemoved.append(ind)
+
+        # is the list now empty?
+        if len(self.sheetLogic.gClefNotesRemoved) == len(self.sheetLogic.gClefNotes):
+            self.generateNewSheet()
+            # self.handleCorrectNotePressed()
 
     def generateNewSheet(self):
         self.sheetLogic.generateRandomNotes(self.minBassNote, self.maxBassNote, self.minTrebleNote, self.maxTrebleNote,
@@ -424,8 +426,8 @@ class MainWindow(QMainWindow):
                     print(keycode, self.sheetLogic.gClefNotes)
                     if keycode in self.sheetLogic.gClefNotes:
 
-                        ind = self.sheetLogic.gClefNotes.index(keycode)
-                        print(ind, self.sheetLogic.fullNotenamesG)
+                        ind = self.sheetLogic.allGClefKeyCodes.index(keycode)
+                        print(ind, self.sheetLogic.fullNotenamesG[ind])
                         self.handleCorrectNotePressed(self.sheetLogic.fullNotenamesG[ind][0])
 
                         #print("indddddddd", ind)
@@ -521,9 +523,10 @@ class MainWindow(QMainWindow):
         print("checka haer da:", self.minTrebleNote, self.maxTrebleNote)
 
         #generate random note lists dependent of the choices the user made!
-        self.sheetLogic.generateRandomNotes(self.minBassNote, self.maxBassNote, self.minTrebleNote, self.maxTrebleNote,
-                                            self.lowestBassNote, self.highestBassNote,
-                                            self.lowestTrebleNote, self.highestTrebleNote)
+        self.generateNewSheet()
+        #self.sheetLogic.generateRandomNotes(self.minBassNote, self.maxBassNote, self.minTrebleNote, self.maxTrebleNote,
+        #                                    self.lowestBassNote, self.highestBassNote,
+        #                                    self.lowestTrebleNote, self.highestTrebleNote)
 
         #if treble is checked, create Widget
         if self.playTreble:
