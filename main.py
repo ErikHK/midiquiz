@@ -161,7 +161,7 @@ class ClefWidget(QtWidgets.QWidget):
             self.clef = QtGui.QIcon("G-clef.svg")
             self.clefPixmap = self.clef.pixmap(QSize(94, 160))
             self.offsx = 0
-            self.offsy = 22
+            self.offsy = 22+20
         else:
             self.clef = QtGui.QIcon("F-clef.svg")
             self.clefPixmap = self.clef.pixmap(QSize(61, 104))
@@ -185,7 +185,7 @@ class ClefWidget(QtWidgets.QWidget):
 
     def drawNotes(self, painter):
         for n in range(len(self.clefNotes)):
-            x = n*60 + self.width/2 - 150
+            x = int(n*60 + self.width/2 - 150)
             ind = allGClefKeys.index(self.clefNotes[n])
             #print("indddd", ind, self.clefNotes[n])
             y = int((14-ind) * 10 + 70)
@@ -371,7 +371,7 @@ class MainWindow(QMainWindow):
         self.lasttime = 0
         self.time2 = 0
 
-        self.midiPollingTimer.stop()
+        #self.midiPollingTimer.stop()
         self.repaint()
         self.score += 1
         time.sleep(.5)
@@ -410,7 +410,7 @@ class MainWindow(QMainWindow):
             midi_events = midiInput.read(10)
             # print "full midi_events " + str(midi_events)
             #print("my midi note is " + str(midi_events[0][0][1]))
-            global keycode
+            #global keycode
             keycode = midi_events[0][0][1]
             down = midi_events[0][0][2]
             #print(down)
@@ -421,36 +421,43 @@ class MainWindow(QMainWindow):
                     self.numberOfNotesPlayed += 1
 
                     #if keycode == randomkey:
+                    print(keycode, self.sheetLogic.gClefNotes)
                     if keycode in self.sheetLogic.gClefNotes:
-                        self.gClefWidget.drawGreen = True
 
-                        self.lasttime = self.time2 - self.lasttime
-                        self.timeForLastNote = f"{self.lasttime:.1f} s"
-                        self.averageTimePerNoteList.append(self.lasttime)
+                        ind = self.sheetLogic.gClefNotes.index(keycode)
+                        print(ind, self.sheetLogic.fullNotenamesG)
+                        self.handleCorrectNotePressed(self.sheetLogic.fullNotenamesG[ind][0])
 
-                        self.lasttime = 0
-                        self.time2 = 0
+                        #print("indddddddd", ind)
+                        #self.gClefWidget.drawGreen[ind] = True
 
-                        self.midiPollingTimer.stop()
-                        self.repaint()
-                        self.score += 1
-                        time.sleep(.5)
+                        #self.lasttime = self.time2 - self.lasttime
+                        #self.timeForLastNote = f"{self.lasttime:.1f} s"
+                        #self.averageTimePerNoteList.append(self.lasttime)
 
-                        generateNewRandomKey()
+                        #self.lasttime = 0
+                        #self.time2 = 0
+
+                        #self.midiPollingTimer.stop()
+                        #self.repaint()
+                        #self.score += 1
+                        #time.sleep(.5)
+
+                        #generateNewRandomKey()
                         #generate new random notes according to rules set in beginning by user in UI
-                        self.sheetLogic.generateRandomNotes(self.minBassNote, self.maxBassNote, self.minTrebleNote,
-                                                            self.maxTrebleNote,
-                                                            self.lowestBassNote, self.highestBassNote,
-                                                            self.lowestTrebleNote, self.highestTrebleNote)
+                        #self.sheetLogic.generateRandomNotes(self.minBassNote, self.maxBassNote, self.minTrebleNote,
+                        #                                    self.maxTrebleNote,
+                        #                                    self.lowestBassNote, self.highestBassNote,
+                        #                                    self.lowestTrebleNote, self.highestTrebleNote)
 
-                        self.gClefWidget.drawGreen = False
-                        self.midiPollingTimer.start()
+                        #self.gClefWidget.drawGreen[ind] = False
+                        #self.midiPollingTimer.start()
                     else:
-                        self.gClefWidget.drawRed = True
+                        #self.gClefWidget.drawRed = True
                         self.midiPollingTimer.stop()
                         self.repaint()
                         time.sleep(.5)
-                        self.gClefWidget.drawRed = False
+                        #self.gClefWidget.drawRed = False
                         self.midiPollingTimer.start()
                     self.accuracy = 100 * self.score / float(self.numberOfNotesPlayed)
 
