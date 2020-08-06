@@ -48,7 +48,7 @@ except:
 
 keycode = 0
 
-allGClefKeys = [53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84, 85, 86]
+allGClefKeys = [53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84, 86, 88]
 allFClefKeys = [33, 35, 36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67]
 
 fullNotenamesF = ["A1", "B2", "C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4"]
@@ -200,6 +200,7 @@ class ClefWidget(QtWidgets.QWidget):
                 else:
                     painter.drawPixmap(QRect(x, y, self.wholeNotePixmap.width(), self.wholeNotePixmap.height()),
                                        self.wholeNotePixmap)
+
             #also draw "extra" staff lines on lower and higher notes
             if ind < 7:
                 for i in range( int((6-ind) / 2)):
