@@ -74,9 +74,6 @@ class SheetLogic():
         self.gClefNotes = []
         self.fClefNotes = []
 
-        self.fullNotenamesF = ["A1", "B2", "C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4"]
-        self.fullNotenamesG = ["F3", "G3", "A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5",
-                          "G5", "A5", "B5", "C6", "D6", "E6"]
     def allPlayed(self):
         for n in self.gClefNotes:
             print("notes", n.name(), n.fullName, n.isPlayed())
@@ -272,10 +269,10 @@ class MainWindow(QMainWindow):
         self.unlimitedNumberOfNotes = False
 
         self.lowestBassNote = 0
-        self.highestBassNote = len(self.sheetLogic.fullNotenamesF) - 1
+        self.highestBassNote = len(fullNotenamesF) - 1
 
         self.lowestTrebleNote = 0
-        self.highestTrebleNote = len(self.sheetLogic.fullNotenamesG) - 1
+        self.highestTrebleNote = len(fullNotenamesG) - 1
 
         self.setupStartUi()
 
@@ -319,12 +316,9 @@ class MainWindow(QMainWindow):
         self.repaint()
         self.score += 1
         #time.sleep(.1)
-        #self.fClefWidget.drawGreen[ind] = False
-        #ALSO CHECK IF ALL ARE PRESSED
 
-        print("before all played")
+        #ALSO CHECK IF ALL ARE PRESSED
         if self.sheetLogic.allPlayed():
-            print("all played!")
             self.generateNewSheet()
 
 
@@ -356,6 +350,15 @@ class MainWindow(QMainWindow):
 
     def midiPolling(self):
         #print("midipolling")
+        #readd = midiInput.read(10)
+        #numkeys = 0
+        #for r in readd:
+        #    if r[0][2]:
+        #        numkeys+=1
+                #print("key", r[0][1], "\n\n")
+
+        #if numkeys == 3:
+        #    print("CHORD!")
         if midiInput.poll():
             midi_events = midiInput.read(10)
             # print "full midi_events " + str(midi_events)
@@ -686,14 +689,14 @@ class MainWindow(QMainWindow):
         self.trebleGridLayout_2.addWidget(self.trebleLabel, 0, 0, 1, 2)
 
         self.highestTrebleNoteComboBox = QtWidgets.QComboBox(self.centralwidget)
-        self.highestTrebleNoteComboBox.addItems(self.sheetLogic.fullNotenamesG)
+        self.highestTrebleNoteComboBox.addItems(fullNotenamesG)
         self.highestTrebleNoteComboBox.setCurrentIndex(self.highestTrebleNote)
 
         self.highestTrebleNoteComboBox.setObjectName("highestTrebleNoteComboBox")
         self.trebleGridLayout_2.addWidget(self.highestTrebleNoteComboBox, 2, 1, 1, 1)
 
         self.lowestTrebleNoteComboBox = QtWidgets.QComboBox(self.centralwidget)
-        self.lowestTrebleNoteComboBox.addItems(self.sheetLogic.fullNotenamesG)
+        self.lowestTrebleNoteComboBox.addItems(fullNotenamesG)
         self.lowestTrebleNoteComboBox.setObjectName("lowestTrebleNoteComboBox")
 
         self.trebleGridLayout_2.addWidget(self.lowestTrebleNoteComboBox, 2, 0, 1, 1)
