@@ -95,6 +95,14 @@ class SheetLogic():
             if note.name() == noteName:
                 note.setPlayed()
 
+    def setKeycodeNotePlayed(self, noteCode):
+        for note in self.gClefNotes:
+            if note.code() == noteCode:
+                note.setPlayed()
+        for note in self.fClefNotes:
+            if note.code() == noteCode:
+                note.setPlayed()
+
     def keyCodeInGNoteList(self, code):
         tmplist = [note.code() for note in self.gClefNotes]
         return code in tmplist
@@ -287,7 +295,7 @@ class MainWindow(QMainWindow):
         self.sheetLogic.setCharNotePlayed(chr(key))
 
         if self.sheetLogic.noteInGNoteList(chr(key)) or self.sheetLogic.noteInFNoteList(chr(key)):
-            self.handleCorrectNotePressed(chr(key))
+            self.handleCorrectNotePressed()
 
         if self.gClefWidget is not None:
             self.gClefWidget.updateNotes(self.sheetLogic.gClefNotes)
@@ -297,34 +305,8 @@ class MainWindow(QMainWindow):
         self.numberOfNotesPlayed += 1
         self.accuracy = 100 * self.score / float(self.numberOfNotesPlayed)
 
-    def handleCorrectNotePressedG(self, note):
-        ind = self.sheetLogic.gClefNotesNamed.index(note)
 
-        self.gClefWidget.drawGreen[ind] = True
-
-        self.lasttime = self.time2 - self.lasttime
-        self.timeForLastNote = f"{self.lasttime:.1f} s"
-        self.averageTimePerNoteList.append(self.lasttime)
-
-        self.lasttime = 0
-        self.time2 = 0
-
-        #self.midiPollingTimer.stop()
-        self.repaint()
-        self.score += 1
-        #time.sleep(.1)
-        self.gClefWidget.drawGreen[ind] = False
-        self.sheetLogic.gClefNotesRemoved.append(ind)
-        self.handleCorrectNotePressed()
-
-    def handleCorrectNotePressed(self, note):
-        #indices = self.sheetLogic.getCorrectNotesF()
-        #for i in indices:
-        #    self.fClefWidget.drawGreen[i] = True
-
-        #indices = self.sheetLogic.getCorrectNotesG()
-        #for i in indices:
-        #    self.gClefWidget.drawGreen[i] = True
+    def handleCorrectNotePressed(self):
 
         self.lasttime = self.time2 - self.lasttime
         self.timeForLastNote = f"{self.lasttime:.1f} s"
@@ -393,20 +375,16 @@ class MainWindow(QMainWindow):
 
 
                     if self.sheetLogic.keyCodeInGNoteList(keycode):
-                        pass
-                        #ind = allGClefKeyCodes.index(keycode)
-                        #print(ind, self.sheetLogic.fullNotenamesG[ind])
-                        #self.handleCorrectNotePressedG(self.sheetLogic.fullNotenamesG[ind][0])
+                        self.sheetLogic.setKeycodeNotePlayed(keycode)
+                        self.handleCorrectNotePressed()
 
 
                     elif self.sheetLogic.keyCodeInFNoteList(keycode):
-                        pass
-                        #ind = allFClefKeyCodes.index(keycode)
-                        #print(ind, self.sheetLogic.fullNotenamesF[ind])
-                        #self.handleCorrectNotePressedF(self.sheetLogic.fullNotenamesF[ind][0])
+                        self.sheetLogic.setKeycodeNotePlayed(keycode)
+                        self.handleCorrectNotePressed()
 
                     else:
-                        #self.gClefWidget.drawRed = True
+
                         self.midiPollingTimer.stop()
                         self.repaint()
                         #time.sleep(.5)
